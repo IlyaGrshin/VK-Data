@@ -1,65 +1,49 @@
+import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers, isShapeNode, isTextNode } from './scripts/utils'
+
 figma.showUI(__html__, { width: 400, height: 400 });
 
-let indexGlobal = 0;
 figma.ui.onmessage = async action => {
   const selection = figma.currentPage.selection
-  console.log('selection: ' + selection)
-  selection.forEach((item, index) => {
-    const current = item as FrameNode | InstanceNode | ComponentNode
-    const nodes = current.children;
 
-    //console.log(' ')
-    //console.log('nodeIndex: ' + index)
-    //console.log('curr: ' + current)
-    //console.log('nodes: ' + nodes)
- 
-    nodes.forEach(node => {
-      transformNodeWithData(node, action.data[index])
-    })
-  })
-  console.log('indexGlobal: ' + indexGlobal++);
-}
-
-function* walkTree(node) {
-  yield node;
-  let children = node.children;
-  if (children) {
-    for (let child of children) {
-      yield* walkTree(child);
+  if (!selection || selection.length === 0) console.log('No selection');
+  if (selection.length === 1) {
+    for (let i = 0; i < selection.length; i++) {
+      await transformNodeWithData(selection[i], action.data[i])
     }
   }
+  else if (selection.every(isFramelikeNode)) { 
+    for (let i = 0; i < selection.length; i++) {
+      await transformNodeWithData(selection[i], action.data[i])
+    }
+  }
+  else if (selectionContainsSettableLayers(selection)) { 
+    for (let i = 0; i < selection.length; i++) {
+      await transformNodeWithData(selection[i], action.data[i])
+    }
+  } else { 
+    console.log(selection)
+  }
 }
 
-function layerConsumesNestedData(layer) {
-  let config = '__'
-  const parts = layer.name.split(' ');
-  return parts.some(part => part.includes(config) && part.includes('.'));
-}
-
-function isFrameNode(node) {
-  return node.type === 'FRAME';
-}
-
-function isComponentOrInstance(node) {
-  return node.type === 'COMPONENT' || node.type === 'INSTANCE';
-}
-
-function isFramelikeNode(node) {
-  return isFrameNode(node) || isComponentOrInstance(node)
-}
-
-async function applyLayerTransformationFromField(layer, field, value?, data?) {
-  if (field.includes('photo_200')) {
-    //if (!isShapeNode(layer)) return;
+async function applyLayerTransformationFromField(layer, value?, field?) {
+  if (field.includes('avatar')) {
     await setBackgroundFillFromImageUrl(layer, value);
   }
+
+  if (field.includes('name')) {
+    if (!isTextNode(layer)) return;
+    await setTextCharactersFromValue(layer, value);
+  }
+
+  if (!isTextNode(layer)) return;
+  await setTextCharactersFromValue(layer, value);
 }
 
 async function transformNodeWithData(node, data) {
-  let config = '__'
   let walker = walkTree(node);
   let settableLayers = [];
   let res;
+  let value;
 
   while (!(res = walker.next()).done) {
     let node = res.value;
@@ -69,12 +53,12 @@ async function transformNodeWithData(node, data) {
   }
 
   if (!settableLayers) figma.notify('No layers are prefixed with __ in order to set data');
+
   for (let layer of settableLayers) {
-    const field = layer.name.replace(config, '');
-    if (data.hasOwnProperty(field)) {
-      const value = data[field];
-      await applyLayerTransformationFromField(layer, field, value, data);
-    }
+      const field = layer.name.replace(config, '');
+      if (field === 'name') value = data['first_name'] + ' ' + data['last_name']
+      else if (field === 'avatar') value = data['photo_200']
+      await applyLayerTransformationFromField(layer, value, field);
   }
 
   return;

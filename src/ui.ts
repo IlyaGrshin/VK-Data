@@ -24,7 +24,7 @@ friendsGet.onclick = () => {
     'user_id': '92093600',
     'order': 'random',
     'fields': 'photo_200,photo_100',
-    'count': '5',
+    'count': '20',
     'access_token': ACCESS_TOKEN,
     'v': '5.101'
   }).then(result => { parent.postMessage({ pluginMessage: { data: result['items'] }}, '*')})
