@@ -1,0 +1,14 @@
+.app {
+    position: relative;
+}
+.desc {
+    text-align: center;
+    line-height: 20px;
+    margin: 136px 24px 24px 24px;
+}
+.styledBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 130px;
+}

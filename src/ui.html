@@ -1,4 +1,101 @@
-<script src="figma-ds/figma-plugin-ds.min.js"></script>
-<link rel="stylesheet" href="figma-ds/figma-plugin-ds.min.css" />
+<div id="app">
+    <button id="friends" class="button button--secondary">Friends</button>
+</div>
 
-<button id="friendsGet" class="button button--secondary">Friends Get</button>
+<script>
+    const HOST = 'https://www.ilyagrshn.com'
+
+    function getToken () {
+        parent.postMessage({ 
+            pluginMessage: { type: 'getToken' }
+        }, '*')
+        onmessage = event => {
+            console.log(event);
+            if (event.data.pluginMessage.type === 'getToken') {
+                let value = event.data.pluginMessage.value
+                console.log('ui.html: ' + value);
+                return value;
+            }
+        }
+    }
+
+    function setToken (token) {
+        parent.postMessage({ 
+            pluginMessage: { type: 'setToken', value: token }
+        }, '*')
+    }
+
+    function getUserID () {
+        parent.postMessage({ 
+            pluginMessage: { type: 'getUserID' }
+        }, '*')
+        window.onmessage = async event => {
+            if (event.data.pluginMessage.type === 'getUserID') {
+                let value = event.data.pluginMessage.value
+                return value;
+            }
+        }
+    }
+
+    function setUserID (id) {
+        parent.postMessage({ 
+            pluginMessage: { type: 'setUserID', value: id }
+        }, '*')
+    }
+
+    async function authenticateAndGetToken() {
+        const { read_key, write_key } = await (await fetch(HOST + '/keys')).json()
+        let url = authUrl(HOST, write_key);
+        // window.open(url);
+
+        let access_token
+        while (true) {
+            try {
+                const json = await (await fetch(HOST + '/finish?read_key=' + encodeURIComponent(read_key))).json()
+                if (json !== null) {
+                    access_token = json.access_token
+                    user_id = json.user_id
+                    break
+                }
+            } catch (e) {
+                // console.error(e)
+            }
+            await new Promise(resolve => setTimeout(resolve, 500 + 1000 * Math.random()))
+        }
+
+        return { access_token: access_token, user_id: user_id }
+    }
+
+    function authUrl(host, write_key) {
+        const APP_ID = '7433966'
+        const SCOPE = 'offline,friends,groups,video'
+
+        let url = 'https://oauth.vk.com/authorize' +
+            '?client_id=' + encodeURIComponent(APP_ID) +
+            '&redirect_uri=' + encodeURIComponent(host + '/callback') +
+            '&display=page' +
+            '&scope=' + encodeURIComponent(SCOPE) +
+            '&response_type=token' +
+            '&state=' + encodeURIComponent(write_key) +
+            '&revoke=1';
+
+        return url;
+    }
+
+    async function run() {
+        let accessToken = await getToken()
+        let userID = await getUserID()
+        console.log(accessToken)
+        if (accessToken === undefined) {
+            authenticateAndGetToken()
+                .then(data => {
+                    let token = data.access_token
+                    let id = data.user_id
+                    setToken(token)
+                    setUserID(id)
+                })
+        }
+    }
+
+    run()
+</script>

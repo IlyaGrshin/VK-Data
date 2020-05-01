@@ -5,23 +5,47 @@ figma.showUI(__html__, { width: 400, height: 400 });
 figma.ui.onmessage = async action => {
   const selection = figma.currentPage.selection
 
-  if (!selection || selection.length === 0) console.log('No selection');
-  if (selection.length === 1) {
-    for (let i = 0; i < selection.length; i++) {
-      await transformNodeWithData(selection[i], action.data[i])
+  if (action.type == 'data') {
+    if (!selection || selection.length === 0) console.log('No selection');
+    if (selection.length === 1) {
+      for (let i = 0; i < selection.length; i++) {
+        await transformNodeWithData(selection[i], action.data[i])
+      }
+    }
+    else if (selection.every(isFramelikeNode)) { 
+      for (let i = 0; i < selection.length; i++) {
+        await transformNodeWithData(selection[i], action.data[i])
+      }
+    }
+    else if (selectionContainsSettableLayers(selection)) { 
+      for (let i = 0; i < selection.length; i++) {
+        await transformNodeWithData(selection[i], action.data[i])
+      }
+    } else { 
+      console.log(selection)
     }
   }
-  else if (selection.every(isFramelikeNode)) { 
-    for (let i = 0; i < selection.length; i++) {
-      await transformNodeWithData(selection[i], action.data[i])
-    }
+
+  if (action.type == 'getToken') {
+    figma.clientStorage.getAsync('access_token_test')
+      .then(value => {
+        console.log('code.ts: ' + value)
+        figma.ui.postMessage({type: 'getToken', data: value})
+      });
   }
-  else if (selectionContainsSettableLayers(selection)) { 
-    for (let i = 0; i < selection.length; i++) {
-      await transformNodeWithData(selection[i], action.data[i])
-    }
-  } else { 
-    console.log(selection)
+
+  if (action.type == 'setToken') {
+    await figma.clientStorage.setAsync('access_token_test', action.value)
+  }
+
+  if (action.type == 'getUserID') {
+    figma.clientStorage.getAsync('user_id_test').then(result => {
+      figma.ui.postMessage({type: 'getToken', value: result})
+    });
+  }
+
+  if (action.type == 'setUserID') {
+    await figma.clientStorage.setAsync('user_id_test', action.value)
   }
 }
 

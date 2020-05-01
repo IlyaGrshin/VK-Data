@@ -1,13 +1,13 @@
+//import vkQr from '@vkontakte/vk-qr';
+// import { auth_url, auth_check } from './scripts/auth'
+
 import './figma-ds/figma-plugin-ds.min.js'
 import './figma-ds/figma-plugin-ds.min.css'
+import './css/common.css'
 
-const APP_ID = '6477972'
-const REDIRECT_URI = 'https://oauth.vk.com/blank.html'
-const SCOPE = 'offline,friends,groups,video'
 const API_URI = 'https://api.vk.com/method/'
 const ACCESS_TOKEN = 'c95e33e5f1a22a026d532694c831818aa541d7e859b3fb7364bc9218ef181a9ad6879016962fbee291468'
-
-const friendsGet = document.getElementById('friendsGet')
+// const ACCESS_TOKEN = getToken();
 
 window.onmessage = async event => {
   if (event.data.pluginMessage.type === 'getImageBytes') {
@@ -17,23 +17,6 @@ window.onmessage = async event => {
       .then(a => parent.postMessage({ pluginMessage: new Uint8Array(a) }, '*'))
       .catch(error => console.error({ error }));
   }
-}
-
-friendsGet.onclick = () => {
-  getData('friends.get', {
-    'user_id': '92093600',
-    'order': 'random',
-    'fields': 'photo_200,photo_100',
-    'count': '20',
-    'access_token': ACCESS_TOKEN,
-    'v': '5.101'
-  }).then(result => { parent.postMessage({ pluginMessage: { data: result['items'] }}, '*')})
-    .catch(error => console.error({ error }));
-}
-
-function auth() {
-  let authURL = 'https://oauth.vk.com/authorize?client_id=' + APP_ID + '&display=page&redirect_uri=' + REDIRECT_URI + '&scope=' + SCOPE + '&response_type=token&v=' + '5.101' + '&revoke=1'
-  console.log(authURL)
 }
 
 function getData(method, options) {
@@ -64,3 +47,36 @@ function getData(method, options) {
     document.getElementsByTagName('head')[0].appendChild(script);
   });
 }
+
+// function launchCheckAuth(device_id) {
+//   console.log(device_id);
+//   auth_check(device_id).then((result) => {
+//     console.log(result)
+//     setToken(result);
+//   })
+// }
+
+// if(getToken() === undefined) {
+  // auth_url().then(result =>{
+  //   document.getElementById('app').innerHTML = 
+  //   '<p class="type type--pos-large-normal desc">Чтобы Вы могли вставлять данные из ВКонтакте, Вам необходимо авторизоваться и разрешить доступ приложения<p>'
+  //   + '<a id="authBtn" class="button button--secondary styledBtn" href=' + result.url + ' target="_blank">Авторизоваться</a>'
+  //   document.getElementById('authBtn').addEventListener('click', function() {
+  //     launchCheckAuth(result.device_id);
+  //   });
+  // })
+
+// } else {
+  // setToken('undefined')
+  document.getElementById('friends').onclick = () => {
+    getData('friends.get', {
+      'user_id': '92093600',
+      'order': 'random',
+      'fields': 'photo_200,photo_100',
+      'count': '20',
+      'access_token': ACCESS_TOKEN,
+      'v': '5.101'
+    }).then(result => { parent.postMessage({ pluginMessage: { type: 'data', data: result['items'] }}, '*')})
+      .catch(error => console.error({ error }));
+  }
+// }
