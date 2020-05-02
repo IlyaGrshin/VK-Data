@@ -1,15 +1,13 @@
-//import vkQr from '@vkontakte/vk-qr';
-// import { auth_url, auth_check } from './scripts/auth'
+import { authenticateAndGetToken } from './scripts/auth'
+import { getToken, setToken, getUserID, setUserID } from './scripts/utils'
 
 import './figma-ds/figma-plugin-ds.min.js'
 import './figma-ds/figma-plugin-ds.min.css'
 import './css/common.css'
 
 const API_URI = 'https://api.vk.com/method/'
-const ACCESS_TOKEN = 'c95e33e5f1a22a026d532694c831818aa541d7e859b3fb7364bc9218ef181a9ad6879016962fbee291468'
-// const ACCESS_TOKEN = getToken();
 
-window.onmessage = async event => {
+window.addEventListener('message', async event => {
   if (event.data.pluginMessage.type === 'getImageBytes') {
     let url = event.data.pluginMessage.url;
     return await fetch(url)
@@ -17,7 +15,7 @@ window.onmessage = async event => {
       .then(a => parent.postMessage({ pluginMessage: new Uint8Array(a) }, '*'))
       .catch(error => console.error({ error }));
   }
-}
+})
 
 function getData(method, options) {
   let esc = encodeURIComponent
@@ -48,35 +46,67 @@ function getData(method, options) {
   });
 }
 
-// function launchCheckAuth(device_id) {
-//   console.log(device_id);
-//   auth_check(device_id).then((result) => {
-//     console.log(result)
-//     setToken(result);
-//   })
-// }
+function auth() {
+  authenticateAndGetToken()
+    .then(data => {
+      let resultToken = data.access_token;
+      let resultID = data.user_id;
+      setToken(resultToken);
+      setUserID(resultID);
+      run();
+    })
+}
 
-// if(getToken() === undefined) {
-  // auth_url().then(result =>{
-  //   document.getElementById('app').innerHTML = 
-  //   '<p class="type type--pos-large-normal desc">Чтобы Вы могли вставлять данные из ВКонтакте, Вам необходимо авторизоваться и разрешить доступ приложения<p>'
-  //   + '<a id="authBtn" class="button button--secondary styledBtn" href=' + result.url + ' target="_blank">Авторизоваться</a>'
-  //   document.getElementById('authBtn').addEventListener('click', function() {
-  //     launchCheckAuth(result.device_id);
-  //   });
-  // })
+function getFriends(ACCESS_TOKEN, USER_ID) {
+  getData('friends.get', {
+    'user_id': USER_ID,
+    'order': 'random',
+    'fields': 'photo_200',
+    'count': '20',
+    'access_token': ACCESS_TOKEN,
+    'v': '5.103'
+  }).then(result => { parent.postMessage({ pluginMessage: { type: 'data', data: result['items'], method: 'friends' } }, '*') })
+    .catch(error => console.error({ error }));
+}
 
-// } else {
-  // setToken('undefined')
-  document.getElementById('friends').onclick = () => {
-    getData('friends.get', {
-      'user_id': '92093600',
-      'order': 'random',
-      'fields': 'photo_200,photo_100',
-      'count': '20',
-      'access_token': ACCESS_TOKEN,
-      'v': '5.101'
-    }).then(result => { parent.postMessage({ pluginMessage: { type: 'data', data: result['items'] }}, '*')})
-      .catch(error => console.error({ error }));
+function getGroups(ACCESS_TOKEN, USER_ID) {
+  getData('groups.get', {
+    'user_id': USER_ID,
+    'order': 'random',
+    'fields': 'photo_200',
+    'count': '20',
+    'extended': '1',
+    'access_token': ACCESS_TOKEN,
+    'v': '5.103'
+  }).then(result => { parent.postMessage({ pluginMessage: { type: 'data', data: result['items'], method: 'groups' } }, '*') })
+    .catch(error => console.error({ error }));
+}
+
+async function run() {
+  let ACCESS_TOKEN = await getToken();
+  let USER_ID = await getUserID();
+
+  if (ACCESS_TOKEN === undefined || USER_ID === undefined) {
+    document.getElementById('app').innerHTML =
+      '<p class="type type--pos-large-normal desc">Чтобы Вы могли вставлять данные из ВКонтакте, Вам необходимо авторизоваться и разрешить доступ приложения<p>'
+      + '<button id="authBtn" class="button button--secondary styledBtn">Авторизоваться</button>'
+    document.getElementById('authBtn').addEventListener('click', auth);
+  } else {
+    let content = document.getElementById('app')
+    content.innerHTML = ''
+    content.innerHTML += '<div id="getFriends" class="cell">' +
+      '<div class="icon icon--share"></div>' +
+      '<div class="cell_main">Friends</div>' +
+      '</div>'
+
+    content.innerHTML += '<div id="getGroups" class="cell">' +
+      '<div class="icon icon--share"></div>' +
+      '<div class="cell_main">Groups</div>' +
+      '</div>'
+
+    document.getElementById('getFriends').addEventListener('click', function () { getFriends(ACCESS_TOKEN, USER_ID); });
+    document.getElementById('getGroups').addEventListener('click', function () { getGroups(ACCESS_TOKEN, USER_ID); });
   }
-// }
+}
+
+run()

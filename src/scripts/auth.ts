@@ -1,55 +1,41 @@
-// probably deprecated
+const HOST = 'https://www.ilyagrshn.com'
 
-const OAUTH_HOST = 'https://oauth.vk.com/';
-const PROXY_DOMAIN = 'https://ilyagrshn.com/'
+export async function authenticateAndGetToken() {
+  const { read_key, write_key } = await (await fetch(HOST + '/keys')).json()
+  let url = authUrl(HOST, write_key);
+  window.open(url);
 
-const APP_ID = '6742961'
-const SCOPE = 'offline,friends,groups,video'
+  let access_token
+  let user_id
+  while (true) {
+      try {
+          const json = await (await fetch(HOST + '/finish?read_key=' + encodeURIComponent(read_key))).json()
+          if (json !== null) {
+              access_token = json.access_token
+              user_id = json.user_id
+              break
+          }
+      } catch (e) {
+          // console.error(e)
+      }
+      await new Promise(resolve => setTimeout(resolve, 500 + 1000 * Math.random()))
+  }
 
-const CODE_SUCCESS = 200;
-
-export async function auth_url() {
-    const get_auth_code = await fetch(PROXY_DOMAIN + 'get_auth_code/?scope=' + SCOPE + '&client_id=' + APP_ID, { cache: 'no-cache' });
-    const get_auth_code_res = await get_auth_code.json();
-  
-    if (get_auth_code_res.error !== void 0) {
-      throw new Error(JSON.stringify(get_auth_code_res.error));
-    }
-  
-    if (get_auth_code_res.response !== void 0) {
-      console.log('fail, get_auth_code response ', get_auth_code_res);
-      return get_auth_code_res.response;
-    }
-  
-    if (get_auth_code_res.auth_code) {
-
-      const { auth_code, device_id } = get_auth_code_res;
-  
-      const url = OAUTH_HOST + 'code_auth?stage=check&code=' + auth_code;
-
-      return {'url': url, 'device_id': device_id};
-    }
+  return { access_token: access_token, user_id: user_id }
 }
 
-export async function auth_check (device_id) {
-    let handled = false;
+function authUrl(host, write_key) {
+  const APP_ID = '7433966'
+  const SCOPE = 'offline,friends,groups,video'
 
-    do {
-        const code_auth_token = await fetch(PROXY_DOMAIN + 'code_auth_token/?device_id=' + device_id + '&client_id=' + APP_ID);
-        const code_auth_token_json = await code_auth_token.json();
-  
-        if (code_auth_token.status !== CODE_SUCCESS) {
-          console.error('code_auth_token.status: ', code_auth_token.status, code_auth_token_json);
-          continue;
-        }
-  
-        const { access_token } = code_auth_token_json;
-        if (access_token || access_token === null) {
-          handled = true;
-        }
-        console.log('test');
-  
-        return Promise.resolve(access_token);
-  
-    } while (handled === false);
+  let url = 'https://oauth.vk.com/authorize' +
+      '?client_id=' + encodeURIComponent(APP_ID) +
+      '&redirect_uri=' + encodeURIComponent(host + '/callback') +
+      '&display=page' +
+      '&scope=' + encodeURIComponent(SCOPE) +
+      '&response_type=token' +
+      '&state=' + encodeURIComponent(write_key) +
+      '&revoke=1';
+
+  return url;
 }

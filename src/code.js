@@ -10,46 +10,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers, isTextNode } from './scripts/utils';
 figma.showUI(__html__, { width: 400, height: 400 });
 figma.ui.onmessage = (action) => __awaiter(void 0, void 0, void 0, function* () {
-    const selection = figma.currentPage.selection;
-    if (action.type == 'data') {
-        if (!selection || selection.length === 0)
-            console.log('No selection');
-        if (selection.length === 1) {
-            for (let i = 0; i < selection.length; i++) {
-                yield transformNodeWithData(selection[i], action.data[i]);
+    switch (action.type) {
+        case 'data':
+            let selection = figma.currentPage.selection;
+            if (!selection || selection.length === 0)
+                console.log('No selection');
+            if (selection.length === 1) {
+                for (let i = 0; i < selection.length; i++) {
+                    yield transformNodeWithData(selection[i], action.data[i], action.method);
+                }
             }
-        }
-        else if (selection.every(isFramelikeNode)) {
-            for (let i = 0; i < selection.length; i++) {
-                yield transformNodeWithData(selection[i], action.data[i]);
+            else if (selection.every(isFramelikeNode)) {
+                for (let i = 0; i < selection.length; i++) {
+                    yield transformNodeWithData(selection[i], action.data[i], action.method);
+                }
             }
-        }
-        else if (selectionContainsSettableLayers(selection)) {
-            for (let i = 0; i < selection.length; i++) {
-                yield transformNodeWithData(selection[i], action.data[i]);
+            else if (selectionContainsSettableLayers(selection)) {
+                for (let i = 0; i < selection.length; i++) {
+                    yield transformNodeWithData(selection[i], action.data[i], action.method);
+                }
             }
-        }
-        else {
-            console.log(selection);
-        }
-    }
-    if (action.type == 'getToken') {
-        figma.clientStorage.getAsync('access_token_test')
-            .then(value => {
-            console.log('code.ts: ' + value);
-            figma.ui.postMessage({ type: 'getToken', data: value });
-        });
-    }
-    if (action.type == 'setToken') {
-        yield figma.clientStorage.setAsync('access_token_test', action.value);
-    }
-    if (action.type == 'getUserID') {
-        figma.clientStorage.getAsync('user_id_test').then(result => {
-            figma.ui.postMessage({ type: 'getToken', value: result });
-        });
-    }
-    if (action.type == 'setUserID') {
-        yield figma.clientStorage.setAsync('user_id_test', action.value);
+            else {
+                console.log(selection);
+            }
+            break;
+        case 'getToken':
+            figma.clientStorage.getAsync('access_token_test')
+                .then(value => {
+                figma.ui.postMessage({ type: 'getToken', value });
+            });
+            break;
+        case 'setToken':
+            yield figma.clientStorage.setAsync('access_token_test', action.value);
+            break;
+        case 'getUserID':
+            figma.clientStorage.getAsync('user_id_test').then(value => {
+                figma.ui.postMessage({ type: 'getUserID', value });
+            });
+            break;
+        case 'setUserID':
+            yield figma.clientStorage.setAsync('user_id_test', action.value);
+            break;
     }
 });
 function applyLayerTransformationFromField(layer, value, field) {
@@ -67,7 +68,7 @@ function applyLayerTransformationFromField(layer, value, field) {
         yield setTextCharactersFromValue(layer, value);
     });
 }
-function transformNodeWithData(node, data) {
+function transformNodeWithData(node, data, method) {
     return __awaiter(this, void 0, void 0, function* () {
         let walker = walkTree(node);
         let settableLayers = [];
@@ -83,8 +84,12 @@ function transformNodeWithData(node, data) {
             figma.notify('No layers are prefixed with __ in order to set data');
         for (let layer of settableLayers) {
             const field = layer.name.replace(config, '');
-            if (field === 'name')
-                value = data['first_name'] + ' ' + data['last_name'];
+            if (field === 'name') {
+                if (method === 'friends')
+                    value = data['first_name'] + ' ' + data['last_name'];
+                if (method === 'groups')
+                    value = data['name'];
+            }
             else if (field === 'avatar')
                 value = data['photo_200'];
             yield applyLayerTransformationFromField(layer, value, field);

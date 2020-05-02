@@ -1,3 +1,10 @@
+body {
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    padding: 0;
+    margin: 0;
+}
+
 .app {
     position: relative;
 }
@@ -11,4 +18,13 @@
     align-items: center;
     justify-content: center;
     margin: 0 130px;
+}
+.cell { 
+    display: flex;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    padding: 8px;
+    cursor: pointer;
+}
+.cell_main { 
+    padding: 7px 4px;
 }

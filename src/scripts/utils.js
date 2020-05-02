@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 export const config = '__';
 const validShapeTypes = ['RECTANGLE', 'ELLIPSE', 'POLYGON', 'STAR', 'VECTOR', 'LINE', 'BOOLEAN_OPERATION'];
 export function isShapeNode(node) {
@@ -29,4 +38,38 @@ export function* walkTree(node) {
             yield* walkTree(child);
         }
     }
+}
+export function getToken() {
+    return new Promise((resolve, reject) => {
+        parent.postMessage({
+            pluginMessage: { type: 'getToken' },
+        }, '*');
+        window.addEventListener('message', (event) => __awaiter(this, void 0, void 0, function* () {
+            if (event.data.pluginMessage && event.data.pluginMessage.type === 'getToken') {
+                resolve(event.data.pluginMessage.value);
+            }
+        }));
+    });
+}
+export function setToken(token) {
+    parent.postMessage({
+        pluginMessage: { type: 'setToken', value: token }
+    }, '*');
+}
+export function getUserID() {
+    return new Promise((resolve, reject) => {
+        parent.postMessage({
+            pluginMessage: { type: 'getUserID' },
+        }, '*');
+        window.addEventListener('message', (event) => __awaiter(this, void 0, void 0, function* () {
+            if (event.data.pluginMessage && event.data.pluginMessage.type === 'getUserID') {
+                resolve(event.data.pluginMessage.value);
+            }
+        }));
+    });
+}
+export function setUserID(id) {
+    parent.postMessage({
+        pluginMessage: { type: 'setUserID', value: id }
+    }, '*');
 }

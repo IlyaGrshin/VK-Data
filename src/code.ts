@@ -3,49 +3,50 @@ import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers, isS
 figma.showUI(__html__, { width: 400, height: 400 });
 
 figma.ui.onmessage = async action => {
-  const selection = figma.currentPage.selection
+  switch(action.type) {
+    case 'data':
+      let selection = figma.currentPage.selection
 
-  if (action.type == 'data') {
-    if (!selection || selection.length === 0) console.log('No selection');
-    if (selection.length === 1) {
-      for (let i = 0; i < selection.length; i++) {
-        await transformNodeWithData(selection[i], action.data[i])
+      if (!selection || selection.length === 0) console.log('No selection');
+      if (selection.length === 1) {
+        for (let i = 0; i < selection.length; i++) {
+          await transformNodeWithData(selection[i], action.data[i], action.method)
+        }
       }
-    }
-    else if (selection.every(isFramelikeNode)) { 
-      for (let i = 0; i < selection.length; i++) {
-        await transformNodeWithData(selection[i], action.data[i])
+      else if (selection.every(isFramelikeNode)) { 
+        for (let i = 0; i < selection.length; i++) {
+          await transformNodeWithData(selection[i], action.data[i], action.method)
+        }
       }
-    }
-    else if (selectionContainsSettableLayers(selection)) { 
-      for (let i = 0; i < selection.length; i++) {
-        await transformNodeWithData(selection[i], action.data[i])
+      else if (selectionContainsSettableLayers(selection)) { 
+        for (let i = 0; i < selection.length; i++) {
+          await transformNodeWithData(selection[i], action.data[i], action.method)
+        }
+      } else { 
+        console.log(selection)
       }
-    } else { 
-      console.log(selection)
-    }
-  }
+      break;
 
-  if (action.type == 'getToken') {
-    figma.clientStorage.getAsync('access_token_test')
+    case 'getToken':
+      figma.clientStorage.getAsync('access_token_test')
       .then(value => {
-        console.log('code.ts: ' + value)
-        figma.ui.postMessage({type: 'getToken', data: value})
+        figma.ui.postMessage({type: 'getToken', value})
       });
-  }
+      break;
 
-  if (action.type == 'setToken') {
-    await figma.clientStorage.setAsync('access_token_test', action.value)
-  }
+    case 'setToken':
+      await figma.clientStorage.setAsync('access_token_test', action.value)
+      break;
 
-  if (action.type == 'getUserID') {
-    figma.clientStorage.getAsync('user_id_test').then(result => {
-      figma.ui.postMessage({type: 'getToken', value: result})
-    });
-  }
+    case 'getUserID':
+      figma.clientStorage.getAsync('user_id_test').then(value => {
+        figma.ui.postMessage({type: 'getUserID', value})
+      });
+      break;
 
-  if (action.type == 'setUserID') {
-    await figma.clientStorage.setAsync('user_id_test', action.value)
+    case 'setUserID':
+      await figma.clientStorage.setAsync('user_id_test', action.value)
+      break;
   }
 }
 
@@ -63,7 +64,7 @@ async function applyLayerTransformationFromField(layer, value?, field?) {
   await setTextCharactersFromValue(layer, value);
 }
 
-async function transformNodeWithData(node, data) {
+async function transformNodeWithData(node, data, method) {
   let walker = walkTree(node);
   let settableLayers = [];
   let res;
@@ -80,8 +81,10 @@ async function transformNodeWithData(node, data) {
 
   for (let layer of settableLayers) {
       const field = layer.name.replace(config, '');
-      if (field === 'name') value = data['first_name'] + ' ' + data['last_name']
-      else if (field === 'avatar') value = data['photo_200']
+      if (field === 'name') {
+        if (method === 'friends') value = data['first_name'] + ' ' + data['last_name']
+        if (method === 'groups') value = data['name']
+      } else if (field === 'avatar') value = data['photo_200']
       await applyLayerTransformationFromField(layer, value, field);
   }
 
