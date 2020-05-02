@@ -1,5 +1,5 @@
 import { authenticateAndGetToken } from './scripts/auth'
-import { getToken, setToken, getUserID, setUserID } from './scripts/utils'
+import { getToken, setToken, getUserID, setUserID, shuffle } from './scripts/utils'
 
 import './figma-ds/figma-plugin-ds.min.js'
 import './figma-ds/figma-plugin-ds.min.css'
@@ -65,20 +65,37 @@ function getFriends(ACCESS_TOKEN, USER_ID) {
     'count': '20',
     'access_token': ACCESS_TOKEN,
     'v': '5.103'
-  }).then(result => { parent.postMessage({ pluginMessage: { type: 'data', data: result['items'], method: 'friends' } }, '*') })
+  }).then(result => {
+    parent.postMessage({
+      pluginMessage: { type: 'data', data: result['items'], method: 'friends' }
+    }, '*')
+  })
     .catch(error => console.error({ error }));
 }
 
 function getGroups(ACCESS_TOKEN, USER_ID) {
+  let items;
+
   getData('groups.get', {
     'user_id': USER_ID,
-    'order': 'random',
     'fields': 'photo_200',
-    'count': '20',
+    'count': '100',
     'extended': '1',
     'access_token': ACCESS_TOKEN,
     'v': '5.103'
-  }).then(result => { parent.postMessage({ pluginMessage: { type: 'data', data: result['items'], method: 'groups' } }, '*') })
+  }).then(result => {
+    items = result['items'];
+    items = shuffle(items);
+
+    let arrRand = []
+    for (let i = 0; i < 100; i++) {
+      arrRand.splice(i, 0, String(items[i]))
+    }
+
+    parent.postMessage({
+      pluginMessage: { type: 'data', data: items, method: 'groups' }
+    }, '*')
+  })
     .catch(error => console.error({ error }));
 }
 

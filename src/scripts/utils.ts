@@ -1,4 +1,4 @@
-export const config = '__'
+export const config = '↳ '
 
 const validShapeTypes = ['RECTANGLE', 'ELLIPSE', 'POLYGON', 'STAR', 'VECTOR', 'LINE', 'BOOLEAN_OPERATION'];
 export function isShapeNode(node) {
@@ -39,40 +39,57 @@ export function* walkTree(node) {
   }
 }
 
-export function getToken () {
+export function getToken() {
   return new Promise((resolve, reject) => {
-      parent.postMessage({
-          pluginMessage: { type: 'getToken' },
-      }, '*')
-      window.addEventListener('message', async event => {
-          if (event.data.pluginMessage && event.data.pluginMessage.type === 'getToken') {
-              resolve(event.data.pluginMessage.value)
-          }
-      })
+    parent.postMessage({
+      pluginMessage: { type: 'getToken' },
+    }, '*')
+    window.addEventListener('message', async event => {
+      if (event.data.pluginMessage && event.data.pluginMessage.type === 'getToken') {
+        resolve(event.data.pluginMessage.value)
+      }
+    })
   })
 }
 
-export function setToken (token: any) {
-  parent.postMessage({ 
-      pluginMessage: { type: 'setToken', value: token }
+export function setToken(token: any) {
+  parent.postMessage({
+    pluginMessage: { type: 'setToken', value: token }
   }, '*')
 }
 
-export function getUserID () {
+export function getUserID() {
   return new Promise((resolve, reject) => {
-      parent.postMessage({
-          pluginMessage: { type: 'getUserID' },
-      }, '*')
-      window.addEventListener('message', async event => {
-          if (event.data.pluginMessage && event.data.pluginMessage.type === 'getUserID') {
-              resolve(event.data.pluginMessage.value)
-          }
-      })
+    parent.postMessage({
+      pluginMessage: { type: 'getUserID' },
+    }, '*')
+    window.addEventListener('message', async event => {
+      if (event.data.pluginMessage && event.data.pluginMessage.type === 'getUserID') {
+        resolve(event.data.pluginMessage.value)
+      }
+    })
   })
 }
 
-export function setUserID (id: any) {
-  parent.postMessage({ 
-      pluginMessage: { type: 'setUserID', value: id }
+export function setUserID(id: any) {
+  parent.postMessage({
+    pluginMessage: { type: 'setUserID', value: id }
   }, '*')
+}
+
+export function shuffle(array) {
+  let currentIndex = array.length
+  let temporaryValue,
+    randomIndex
+
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex -= 1
+
+    temporaryValue = array[currentIndex]
+    array[currentIndex] = array[randomIndex]
+    array[randomIndex] = temporaryValue
+  }
+
+  return array
 }

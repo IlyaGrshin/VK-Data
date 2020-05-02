@@ -1,9 +1,9 @@
-import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers, isShapeNode, isTextNode } from './scripts/utils'
+import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers, isTextNode } from './scripts/utils'
 
-figma.showUI(__html__, { width: 400, height: 400 });
+figma.showUI(__html__, { width: 300, height: 400 });
 
 figma.ui.onmessage = async action => {
-  switch(action.type) {
+  switch (action.type) {
     case 'data':
       let selection = figma.currentPage.selection
 
@@ -13,25 +13,25 @@ figma.ui.onmessage = async action => {
           await transformNodeWithData(selection[i], action.data[i], action.method)
         }
       }
-      else if (selection.every(isFramelikeNode)) { 
+      else if (selection.every(isFramelikeNode)) {
         for (let i = 0; i < selection.length; i++) {
           await transformNodeWithData(selection[i], action.data[i], action.method)
         }
       }
-      else if (selectionContainsSettableLayers(selection)) { 
+      else if (selectionContainsSettableLayers(selection)) {
         for (let i = 0; i < selection.length; i++) {
           await transformNodeWithData(selection[i], action.data[i], action.method)
         }
-      } else { 
+      } else {
         console.log(selection)
       }
       break;
 
     case 'getToken':
       figma.clientStorage.getAsync('access_token_test')
-      .then(value => {
-        figma.ui.postMessage({type: 'getToken', value})
-      });
+        .then(value => {
+          figma.ui.postMessage({ type: 'getToken', value })
+        });
       break;
 
     case 'setToken':
@@ -40,7 +40,7 @@ figma.ui.onmessage = async action => {
 
     case 'getUserID':
       figma.clientStorage.getAsync('user_id_test').then(value => {
-        figma.ui.postMessage({type: 'getUserID', value})
+        figma.ui.postMessage({ type: 'getUserID', value })
       });
       break;
 
@@ -51,17 +51,13 @@ figma.ui.onmessage = async action => {
 }
 
 async function applyLayerTransformationFromField(layer, value?, field?) {
-  if (field.includes('avatar')) {
+  if (field.includes('Image')) {
     await setBackgroundFillFromImageUrl(layer, value);
   }
 
-  if (field.includes('name')) {
-    if (!isTextNode(layer)) return;
+  if (field.includes('Title')) {
     await setTextCharactersFromValue(layer, value);
   }
-
-  if (!isTextNode(layer)) return;
-  await setTextCharactersFromValue(layer, value);
 }
 
 async function transformNodeWithData(node, data, method) {
@@ -77,15 +73,17 @@ async function transformNodeWithData(node, data, method) {
     }
   }
 
-  if (!settableLayers) figma.notify('No layers are prefixed with __ in order to set data');
+  if (!settableLayers) figma.notify('No layers are prefixed with ' + config + ' in order to set data');
 
   for (let layer of settableLayers) {
-      const field = layer.name.replace(config, '');
-      if (field === 'name') {
-        if (method === 'friends') value = data['first_name'] + ' ' + data['last_name']
-        if (method === 'groups') value = data['name']
-      } else if (field === 'avatar') value = data['photo_200']
+    const field = layer.name.replace(config, '');
+
+    if (field !== undefined) {
+      if (field === 'Title' && method === 'friends') value = data['first_name'] + ' ' + data['last_name'];
+      if (field === 'Title' && method === 'groups') value = data['name']
+      if (field === 'Image') value = data['photo_200']
       await applyLayerTransformationFromField(layer, value, field);
+    }
   }
 
   return;
