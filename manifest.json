@@ -1,6 +1,6 @@
 {
-  "name": "VK Data",
-  "id": "781609520498619075",
+  "name": "VK Data Dev",
+  "id": "838809506624217559",
   "api": "1.0.0",
   "main": "dist/code.js",
   "ui": "dist/ui.html"
