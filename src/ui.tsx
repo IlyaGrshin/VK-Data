@@ -13,10 +13,13 @@ const API_URI = 'https://api.vk.com/method/'
 window.addEventListener('message', async event => {
   if (event.data.pluginMessage.type === 'getImageBytes') {
     let url = event.data.pluginMessage.url;
-    return await fetch(url)
-      .then(result => result.arrayBuffer())
-      .then(a => parent.postMessage({ pluginMessage: new Uint8Array(a) }, '*'))
-      .catch(error => console.error({ error }));
+    try {
+      await fetch(url)
+        .then(result => result.arrayBuffer())
+        .then(a => parent.postMessage({ pluginMessage: new Uint8Array(a) }, '*'))
+    } catch (error) {
+      console.error(error);
+    }
   }
 })
 
@@ -45,7 +48,7 @@ function getData(method, options) {
     script.async = true;
     script.src = url;
 
-    document.getElementsByTagName('head')[0].appendChild(script);
+    document.head.appendChild(script);
   });
 }
 
@@ -103,7 +106,7 @@ class List extends React.Component<any> {
   }
 
   render() {
-    return <div>
+    return <div className="list">
        <Cell 
         name="Друзья" 
         onClick={() => this.getFriends(this.props.access_token, this.props.user_id)} 
@@ -119,7 +122,7 @@ class List extends React.Component<any> {
 function AuthGreeting(props) {
   return (
     <div>
-      <p className="ype type--pos-large-normal desc">
+      <p className="type type--pos-large-normal desc">
         Чтобы вставлять данные из ВКонтакте, Вам необходимо авторизоваться и разрешить доступ приложению
       </p>
       <button className="button button--secondary styledBtn" onClick={props.onClick}>Авторизоваться</button>

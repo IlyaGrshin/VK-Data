@@ -5,7 +5,12 @@ body {
     margin: 0;
 }
 
+.list {
+    padding: 4px 0;
+}
+
 .app {
+  
     position: relative;
 }
 .desc {
@@ -13,17 +18,20 @@ body {
     line-height: 20px;
     margin: 136px 24px 24px 24px;
 }
+
 .styledBtn {
     display: flex;
     align-items: center;
     justify-content: center;
     margin: auto;
 }
+
 .cell { 
     display: flex;
     padding: 8px;
     cursor: pointer;
 }
+
 .cell_main { 
     padding: 7px 4px;
 }

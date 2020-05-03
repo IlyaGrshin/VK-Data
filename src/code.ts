@@ -7,7 +7,7 @@ figma.ui.onmessage = async action => {
     case 'data':
       let selection = figma.currentPage.selection
 
-      if (!selection || selection.length === 0) console.log('No selection');
+      if (!selection || selection.length === 0) figma.notify('No selection');
       if (selection.length === 1) {
         for (let i = 0; i < selection.length; i++) {
           await transformNodeWithData(selection[i], action.data[i], action.method)
