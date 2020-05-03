@@ -1,4 +1,4 @@
-import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers, isTextNode } from './scripts/utils'
+import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers } from './scripts/utils'
 
 figma.showUI(__html__, { width: 300, height: 400 });
 
@@ -52,6 +52,9 @@ figma.ui.onmessage = async action => {
 
 async function applyLayerTransformationFromField(layer, value?, field?) {
   if (field.includes('Image')) {
+    if (value.includes('camera_200.png') || value.includes('deactivated_200.png') || value.includes('community_200.png')) {
+      value = require('./img/camera_200.png').default
+    }
     await setBackgroundFillFromImageUrl(layer, value);
   }
 

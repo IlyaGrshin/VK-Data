@@ -9,7 +9,9 @@
 	},
 	"author": "Ilya Grishin",
 	"license": "MIT",
-	"dependencies": {},
+	"dependencies": {
+		"@types/node": "^13.13.4"
+	},
 	"devDependencies": {
 		"css-loader": "^3.5.3",
 		"html-webpack-inline-source-plugin": "0.0.10",
