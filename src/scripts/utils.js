@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-export const config = '__';
+export const config = '↳ ';
 const validShapeTypes = ['RECTANGLE', 'ELLIPSE', 'POLYGON', 'STAR', 'VECTOR', 'LINE', 'BOOLEAN_OPERATION'];
 export function isShapeNode(node) {
     return validShapeTypes.indexOf(node.type) >= 0;
@@ -72,4 +72,16 @@ export function setUserID(id) {
     parent.postMessage({
         pluginMessage: { type: 'setUserID', value: id }
     }, '*');
+}
+export function shuffle(array) {
+    let currentIndex = array.length;
+    let temporaryValue, randomIndex;
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+    return array;
 }

@@ -7,14 +7,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers, isTextNode } from './scripts/utils';
-figma.showUI(__html__, { width: 400, height: 400 });
+import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers } from './scripts/utils';
+figma.showUI(__html__, { width: 300, height: 400 });
 figma.ui.onmessage = (action) => __awaiter(void 0, void 0, void 0, function* () {
     switch (action.type) {
         case 'data':
             let selection = figma.currentPage.selection;
             if (!selection || selection.length === 0)
-                console.log('No selection');
+                figma.notify('No selection');
             if (selection.length === 1) {
                 for (let i = 0; i < selection.length; i++) {
                     yield transformNodeWithData(selection[i], action.data[i], action.method);
@@ -35,37 +35,35 @@ figma.ui.onmessage = (action) => __awaiter(void 0, void 0, void 0, function* () 
             }
             break;
         case 'getToken':
-            figma.clientStorage.getAsync('access_token_test')
+            figma.clientStorage.getAsync('access_token')
                 .then(value => {
                 figma.ui.postMessage({ type: 'getToken', value });
             });
             break;
         case 'setToken':
-            yield figma.clientStorage.setAsync('access_token_test', action.value);
+            yield figma.clientStorage.setAsync('access_token', action.value);
             break;
         case 'getUserID':
-            figma.clientStorage.getAsync('user_id_test').then(value => {
+            figma.clientStorage.getAsync('user_id').then(value => {
                 figma.ui.postMessage({ type: 'getUserID', value });
             });
             break;
         case 'setUserID':
-            yield figma.clientStorage.setAsync('user_id_test', action.value);
+            yield figma.clientStorage.setAsync('user_id', action.value);
             break;
     }
 });
 function applyLayerTransformationFromField(layer, value, field) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (field.includes('avatar')) {
+        if (field.includes('Image')) {
+            if (value.includes('camera_200.png') || value.includes('deactivated_200.png') || value.includes('community_200.png')) {
+                value = require('./img/camera_200.png').default;
+            }
             yield setBackgroundFillFromImageUrl(layer, value);
         }
-        if (field.includes('name')) {
-            if (!isTextNode(layer))
-                return;
+        if (field.includes('Title')) {
             yield setTextCharactersFromValue(layer, value);
         }
-        if (!isTextNode(layer))
-            return;
-        yield setTextCharactersFromValue(layer, value);
     });
 }
 function transformNodeWithData(node, data, method) {
@@ -81,18 +79,18 @@ function transformNodeWithData(node, data, method) {
             }
         }
         if (!settableLayers)
-            figma.notify('No layers are prefixed with __ in order to set data');
+            figma.notify('No layers are prefixed with ' + config + ' in order to set data');
         for (let layer of settableLayers) {
             const field = layer.name.replace(config, '');
-            if (field === 'name') {
-                if (method === 'friends')
+            if (field !== undefined) {
+                if (field === 'Title' && method === 'friends')
                     value = data['first_name'] + ' ' + data['last_name'];
-                if (method === 'groups')
+                if (field === 'Title' && method === 'groups')
                     value = data['name'];
+                if (field === 'Image')
+                    value = data['photo_200'];
+                yield applyLayerTransformationFromField(layer, value, field);
             }
-            else if (field === 'avatar')
-                value = data['photo_200'];
-            yield applyLayerTransformationFromField(layer, value, field);
         }
         return;
     });

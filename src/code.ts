@@ -28,24 +28,24 @@ figma.ui.onmessage = async action => {
       break;
 
     case 'getToken':
-      figma.clientStorage.getAsync('access_token_test')
+      figma.clientStorage.getAsync('access_token')
         .then(value => {
           figma.ui.postMessage({ type: 'getToken', value })
         });
       break;
 
     case 'setToken':
-      await figma.clientStorage.setAsync('access_token_test', action.value)
+      await figma.clientStorage.setAsync('access_token', action.value)
       break;
 
     case 'getUserID':
-      figma.clientStorage.getAsync('user_id_test').then(value => {
+      figma.clientStorage.getAsync('user_id').then(value => {
         figma.ui.postMessage({ type: 'getUserID', value })
       });
       break;
 
     case 'setUserID':
-      await figma.clientStorage.setAsync('user_id_test', action.value)
+      await figma.clientStorage.setAsync('user_id', action.value)
       break;
   }
 }
