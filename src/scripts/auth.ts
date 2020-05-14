@@ -2,7 +2,7 @@ const HOST = 'https://www.ilyagrshn.com'
 
 export async function authenticateAndGetToken() {
   const { read_key, write_key } = await (await fetch(HOST + '/keys')).json()
-  let url = authUrl(HOST, write_key);
+  let url = authUrl(write_key);
   window.open(url);
 
   let access_token
@@ -24,18 +24,6 @@ export async function authenticateAndGetToken() {
   return { access_token: access_token, user_id: user_id }
 }
 
-function authUrl(host, write_key) {
-  const APP_ID = '7433966'
-  const SCOPE = 'offline,friends,groups,video'
-
-  let url = 'https://oauth.vk.com/authorize' +
-      '?client_id=' + encodeURIComponent(APP_ID) +
-      '&redirect_uri=' + encodeURIComponent(host + '/callback') +
-      '&display=page' +
-      '&scope=' + encodeURIComponent(SCOPE) +
-      '&response_type=token' +
-      '&state=' + encodeURIComponent(write_key) +
-      '&revoke=1';
-
-  return url;
+function authUrl(write_key) {
+  return HOST + '/start?write_key=' + write_key;
 }
