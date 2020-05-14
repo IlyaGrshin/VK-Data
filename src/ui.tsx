@@ -114,15 +114,30 @@ class List extends React.Component<any> {
       .catch(error => console.error({ error }));
   }
 
+  getByUserID = (ACCESS_TOKEN: any, USER_ID: any) => {
+    getData('users.get', {
+      'user_ids': USER_ID,
+      'fields': 'photo_200',
+      'access_token': ACCESS_TOKEN,
+      'v': '5.103'
+    })
+      .then(result => {
+        parent.postMessage({
+          pluginMessage: { type: 'data', data: result['response'], method: 'me' }
+        }, '*')
+      })
+      .catch(error => console.error({ error }));
+  }
+
   render() {
     return <div className="list">
       <Cell 
-        name="Друзья · Топ" 
-        onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'hints')} 
-      />
-       <Cell 
         name="Друзья · Рандом" 
         onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'random')} 
+      />
+       <Cell 
+        name="Друзья · По имени" 
+        onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'name')} 
       />
       <Cell 
         name="Сообщества  · Топ" 
@@ -131,6 +146,10 @@ class List extends React.Component<any> {
       <Cell 
         name="Сообщества  · Рандом" 
         onClick={() => this.getGroups(this.props.access_token, this.props.user_id, 'random')} 
+      />
+      <Cell 
+        name="Твой профиль" 
+        onClick={() => this.getByUserID(this.props.access_token, this.props.user_id)} 
       />
     </div>
   }

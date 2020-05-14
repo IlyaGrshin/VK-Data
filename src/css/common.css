@@ -3,6 +3,7 @@ body {
     font-size: 13px;
     padding: 0;
     margin: 0;
+    user-select: none;
 }
 
 .list {

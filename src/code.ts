@@ -1,6 +1,6 @@
 import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers } from './scripts/utils'
 
-figma.showUI(__html__, { width: 300, height: 400 });
+figma.showUI(__html__, { width: 300, height: 290 });
 
 figma.ui.onmessage = async action => {
   switch (action.type) {
@@ -85,13 +85,17 @@ async function transformNodeWithData(node, data, method) {
     const field = layer.name.replace(config, '');
 
     if (field !== undefined) {
-      //friends 
+      // friends 
       if (field === 'Title' && method === 'friends') value = data['first_name'] + ' ' + data['last_name']
       if (field === 'Image' && method === 'friends') value = data['photo_200']
 
-      //groups
-      if (field === 'Title' && method === 'groups') value = data['name'];
+      // groups
+      if (field === 'Title' && method === 'groups') value = data['name']
       if (field === 'Image' && method === 'groups') value = data['photo_200']
+
+      // user
+      if (field === 'Title' && method === 'me') value = data['first_name'] + ' ' + data['last_name']
+      if (field === 'Image' && method === 'me') value = data['photo_200']
 
       await applyLayerTransformationFromField(layer, value, field);
     }
