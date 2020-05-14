@@ -47,6 +47,9 @@ figma.ui.onmessage = async action => {
     case 'setUserID':
       await figma.clientStorage.setAsync('user_id', action.value)
       break;
+
+    case 'snackbar':
+      figma.notify(action.text)
   }
 }
 
@@ -82,9 +85,14 @@ async function transformNodeWithData(node, data, method) {
     const field = layer.name.replace(config, '');
 
     if (field !== undefined) {
-      if (field === 'Title' && method === 'friends') value = data['first_name'] + ' ' + data['last_name'];
-      if (field === 'Title' && method === 'groups') value = data['name']
-      if (field === 'Image') value = data['photo_200']
+      //friends 
+      if (field === 'Title' && method === 'friends') value = data['first_name'] + ' ' + data['last_name']
+      if (field === 'Image' && method === 'friends') value = data['photo_200']
+
+      //groups
+      if (field === 'Title' && method === 'groups') value = data['name'];
+      if (field === 'Image' && method === 'groups') value = data['photo_200']
+
       await applyLayerTransformationFromField(layer, value, field);
     }
   }

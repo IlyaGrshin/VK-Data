@@ -40,7 +40,7 @@ function getData(method, options) {
 
     window[callbackName] = function (data) {
       window.clearTimeout(timeoutTrigger);
-      resolve(data.response);
+      resolve(data);
     };
 
     let script = document.createElement('script');
@@ -61,11 +61,17 @@ function Cell(props) {
   )
 }
 
+function Logout(props) {
+  return (
+    <div className="logout" onClick={props.onClick}>Выйти</div>
+  )
+}
+
 class List extends React.Component<any> {
-  getFriends = (ACCESS_TOKEN: any, USER_ID: any) => {
+  getFriends = (ACCESS_TOKEN: any, USER_ID: any, order: any) => {
     getData('friends.get', {
       'user_id': USER_ID,
-      'order': 'random',
+      'order': order,
       'fields': 'photo_200',
       'count': '20',
       'access_token': ACCESS_TOKEN,
@@ -73,31 +79,34 @@ class List extends React.Component<any> {
     })
       .then(result => {
         parent.postMessage({
-          pluginMessage: { type: 'data', data: result['items'], method: 'friends' }
+          pluginMessage: { type: 'data', data: result['response']['items'], method: 'friends' }
         }, '*')
       })
       .catch(error => console.error({ error }));
   }
 
-  getGroups = (ACCESS_TOKEN: any, USER_ID: any) => {
+  getGroups = (ACCESS_TOKEN: any, USER_ID: any, order: any) => {
     let items: [];
-  
+    const count = 100;
+
     getData('groups.get', {
       'user_id': USER_ID,
       'fields': 'photo_200',
-      'count': '100',
+      'count': count,
       'extended': '1',
       'access_token': ACCESS_TOKEN,
       'v': '5.103'
     }).then(result => {
-      items = result['items'];
-      items = shuffle(items);
-  
-      let arrRand = []
-      for (let i = 0; i < 100; i++) {
-        arrRand.splice(i, 0, String(items[i]))
+      items = result['response']['items'];
+
+      if(order === 'random') {
+        items = shuffle(items);
+        let arrRand = []
+        for (let i = 0; i < count; i++) {
+          arrRand.splice(i, 0, String(items[i]))
+        }
       }
-  
+
       parent.postMessage({
         pluginMessage: { type: 'data', data: items, method: 'groups' }
       }, '*')
@@ -107,13 +116,21 @@ class List extends React.Component<any> {
 
   render() {
     return <div className="list">
+      <Cell 
+        name="Друзья · Топ" 
+        onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'hints')} 
+      />
        <Cell 
-        name="Друзья" 
-        onClick={() => this.getFriends(this.props.access_token, this.props.user_id)} 
+        name="Друзья · Рандом" 
+        onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'random')} 
       />
       <Cell 
-        name="Сообщества" 
-        onClick={() => this.getGroups(this.props.access_token, this.props.user_id)} 
+        name="Сообщества  · Топ" 
+        onClick={() => this.getGroups(this.props.access_token, this.props.user_id, 'hints')} 
+      />
+      <Cell 
+        name="Сообщества  · Рандом" 
+        onClick={() => this.getGroups(this.props.access_token, this.props.user_id, 'random')} 
       />
     </div>
   }
@@ -161,18 +178,31 @@ class App extends React.Component<any> {
       })
   }
 
+  logout = () => {
+    setToken(undefined);
+    setUserID(undefined);
+
+    this.setState({
+      ACCESS_TOKEN: undefined,
+      USER_ID: undefined
+    })
+  }
+
   render() {
     const { ACCESS_TOKEN, USER_ID } = this.state;
-    let content;
+    let content, logout;
     
     if(ACCESS_TOKEN === undefined || USER_ID === undefined) {
-      content = <AuthGreeting onClick={this.auth} />;
+      content = <AuthGreeting onClick={this.auth} />
+      logout = null;
     } else {
-      content = <List access_token={ACCESS_TOKEN} user_id={USER_ID} />;
+      content = <List access_token={ACCESS_TOKEN} user_id={USER_ID} />
+      logout = <Logout onClick={this.logout} />
     }
 
     return <div>
       {content}
+      {logout}
     </div>
   }
 }
