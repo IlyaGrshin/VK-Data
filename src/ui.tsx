@@ -72,14 +72,14 @@ class List extends React.Component<any> {
     getData('friends.get', {
       'user_id': USER_ID,
       'order': order,
-      'fields': 'photo_200,occupation,city,bdate',
+      'fields': 'photo_200,occupation,city,bdate,verified',
       'count': '20',
       'access_token': ACCESS_TOKEN,
       'v': '5.103'
     })
       .then(result => {
         parent.postMessage({
-          pluginMessage: { type: 'data', data: result['response']['items'], method: 'friends' }
+          pluginMessage: { type: 'data', data: result['response']['items'], method: 'person' }
         }, '*')
       })
       .catch(error => console.error({ error }));
@@ -91,7 +91,7 @@ class List extends React.Component<any> {
 
     getData('groups.get', {
       'user_id': USER_ID,
-      'fields': 'photo_200,activity',
+      'fields': 'photo_200,activity,verified',
       'count': count,
       'extended': '1',
       'access_token': ACCESS_TOKEN,
@@ -117,13 +117,13 @@ class List extends React.Component<any> {
   getByUserID = (ACCESS_TOKEN: any, USER_ID: any) => {
     getData('users.get', {
       'user_ids': USER_ID,
-      'fields': 'photo_200',
+      'fields': 'photo_200,occupation,city,bdate,verified',
       'access_token': ACCESS_TOKEN,
       'v': '5.103'
     })
       .then(result => {
         parent.postMessage({
-          pluginMessage: { type: 'data', data: result['response'], method: 'me' }
+          pluginMessage: { type: 'data', data: result['response'], method: 'person' }
         }, '*')
       })
       .catch(error => console.error({ error }));

@@ -1,4 +1,4 @@
-import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers } from './scripts/utils'
+import { config, showConfig, walkTree, isFramelikeNode, selectionContainsSettableLayers } from './scripts/utils'
 
 figma.showUI(__html__, { width: 300, height: 290 });
 
@@ -61,12 +61,16 @@ async function applyLayerTransformationFromField(layer, value?, field?) {
     await setBackgroundFillFromImageUrl(layer, value);
   }
 
-  if (field.includes('Title')) {
+  if (field.includes('Title') && !field.includes('Hide')) {
     await setTextCharactersFromValue(layer, value);
   }
 
-  if (field.includes('Subtitle') && !field.includes('Second Subtitle')) {
+  if (field.includes('Subtitle') && !field.includes('Second Subtitle') && !field.includes('Hide')) {
     await setTextCharactersFromValue(layer, value);
+  }
+
+  if (field.includes('Hide Badge')) {
+    layer.visible = value;
   }
 }
 
@@ -78,7 +82,7 @@ async function transformNodeWithData(node, data, method) {
 
   while (!(res = walker.next()).done) {
     let node = res.value;
-    if (node.name.startsWith(config)) {
+    if (node.name.startsWith(config) || node.name.startsWith(showConfig)) {
       settableLayers.push(node);
     }
   }
@@ -86,13 +90,13 @@ async function transformNodeWithData(node, data, method) {
   if (!settableLayers) figma.notify('No layers are prefixed with ' + config + ' in order to set data');
 
   for (let layer of settableLayers) {
-    const field = layer.name.replace(config, '');
+    if (layer.name.includes(config)) {
+      const field = layer.name.replace(config, '');
 
-    if (field !== undefined) {
       // friends 
-      if (field === 'Title' && method === 'friends') value = data['first_name'] + ' ' + data['last_name']
-      if (field === 'Image' && method === 'friends') value = data['photo_200']
-      if (field === 'Subtitle' && method === 'friends') {
+      if (field === 'Title' && method === 'person') value = data['first_name'] + ' ' + data['last_name']
+      if (field === 'Image' && method === 'person') value = data['photo_200']
+      if (field === 'Subtitle' && method === 'person') {
         try {
           value = ' '
           if (data['city']['title']) value = data['city']['title']
@@ -107,20 +111,14 @@ async function transformNodeWithData(node, data, method) {
       if (field === 'Image' && method === 'groups') value = data['photo_200']
       if (field === 'Subtitle' && method === 'groups') value = data['activity']
 
-      // user
-      if (field === 'Title' && method === 'me') value = data['first_name'] + ' ' + data['last_name']
-      if (field === 'Image' && method === 'me') value = data['photo_200']
-      if (field === 'Subtitle' && method === 'friends') {
-        try {
-          value = ' '
-          if (data['city']['title']) value = data['city']['title']
-          if (data['occupation']['name']) value = data['occupation']['name']
-        } catch (e) {
-          // console.log(e)
-        }
-      }
+      await applyLayerTransformationFromField(layer, value, field)
+    }
+    if (layer.name.includes(showConfig)) {
+      const field = layer.name.replace(showConfig, '')
+      
+      value = (field === 'Hide Badge' && data['verified'] == 1) ? true : false;
 
-      await applyLayerTransformationFromField(layer, value, field);
+      await applyLayerTransformationFromField(layer, value, field)
     }
   }
 
