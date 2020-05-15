@@ -64,6 +64,10 @@ async function applyLayerTransformationFromField(layer, value?, field?) {
   if (field.includes('Title')) {
     await setTextCharactersFromValue(layer, value);
   }
+
+  if (field.includes('Subtitle') && !field.includes('Second Subtitle')) {
+    await setTextCharactersFromValue(layer, value);
+  }
 }
 
 async function transformNodeWithData(node, data, method) {
@@ -88,14 +92,33 @@ async function transformNodeWithData(node, data, method) {
       // friends 
       if (field === 'Title' && method === 'friends') value = data['first_name'] + ' ' + data['last_name']
       if (field === 'Image' && method === 'friends') value = data['photo_200']
+      if (field === 'Subtitle' && method === 'friends') {
+        try {
+          value = ' '
+          if (data['city']['title']) value = data['city']['title']
+          if (data['occupation']['name']) value = data['occupation']['name']
+        } catch (e) {
+          // console.log(e)
+        }
+      }
 
       // groups
       if (field === 'Title' && method === 'groups') value = data['name']
       if (field === 'Image' && method === 'groups') value = data['photo_200']
+      if (field === 'Subtitle' && method === 'groups') value = data['activity']
 
       // user
       if (field === 'Title' && method === 'me') value = data['first_name'] + ' ' + data['last_name']
       if (field === 'Image' && method === 'me') value = data['photo_200']
+      if (field === 'Subtitle' && method === 'friends') {
+        try {
+          value = ' '
+          if (data['city']['title']) value = data['city']['title']
+          if (data['occupation']['name']) value = data['occupation']['name']
+        } catch (e) {
+          // console.log(e)
+        }
+      }
 
       await applyLayerTransformationFromField(layer, value, field);
     }
