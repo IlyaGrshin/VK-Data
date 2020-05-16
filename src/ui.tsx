@@ -99,13 +99,7 @@ class List extends React.Component<any> {
     }).then(result => {
       items = result['response']['items'];
 
-      if(order === 'random') {
-        items = shuffle(items);
-        let arrRand = []
-        for (let i = 0; i < count; i++) {
-          arrRand.splice(i, 0, String(items[i]))
-        }
-      }
+      if(order === 'random') items = shuffle(items)
 
       parent.postMessage({
         pluginMessage: { type: 'data', data: items, method: 'groups' }
