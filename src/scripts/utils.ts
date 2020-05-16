@@ -1,5 +1,7 @@
-export const config = '↳ '
-export const showConfig = 'Show/'
+export const config = {
+  main: '↳ ',
+  show: 'Show/'
+}
 
 const validShapeTypes = ['RECTANGLE', 'ELLIPSE', 'POLYGON', 'STAR', 'VECTOR', 'LINE', 'BOOLEAN_OPERATION'];
 export function isShapeNode(node) {
@@ -23,7 +25,16 @@ export function isFramelikeNode(node) {
 }
 
 export function selectionContainsSettableLayers(selection) {
-  return selection.some(node => node.name.startsWith(config))
+  let getConfigKey = function() {
+    let keys = [];
+    let conf = Object.keys(config)
+    for(var key in conf){
+       keys.push(key);
+    }
+    return keys;
+  }
+
+  return selection.some(node => node.name.startsWith(getConfigKey))
 }
 
 export function getRandomElementFromArray(array) {

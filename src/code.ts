@@ -1,4 +1,4 @@
-import { config, showConfig, walkTree, isFramelikeNode, selectionContainsSettableLayers } from './scripts/utils'
+import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers } from './scripts/utils'
 
 figma.showUI(__html__, { width: 300, height: 290 });
 
@@ -82,16 +82,16 @@ async function transformNodeWithData(node, data, method) {
 
   while (!(res = walker.next()).done) {
     let node = res.value;
-    if (node.name.startsWith(config) || node.name.startsWith(showConfig)) {
+    if (node.name.startsWith(config.main) || node.name.startsWith(config.show)) {
       settableLayers.push(node);
     }
   }
 
-  if (!settableLayers) figma.notify('No layers are prefixed with ' + config + ' in order to set data');
+  if (!settableLayers) figma.notify('No layers are prefixed with ' + config.main + 'or' + config.show + ' in order to set data');
 
   for (let layer of settableLayers) {
-    if (layer.name.includes(config)) {
-      const field = layer.name.replace(config, '');
+    if (layer.name.includes(config.main)) {
+      const field = layer.name.replace(config.main, '');
 
       // friends 
       if (field === 'Title' && method === 'person') value = data['first_name'] + ' ' + data['last_name']
@@ -113,8 +113,9 @@ async function transformNodeWithData(node, data, method) {
 
       await applyLayerTransformationFromField(layer, value, field)
     }
-    if (layer.name.includes(showConfig)) {
-      const field = layer.name.replace(showConfig, '')
+
+    if (layer.name.includes(config.show)) {
+      const field = layer.name.replace(config.show, '')
       
       value = (field === 'Hide Badge' && data['verified'] == 1) ? true : false;
 
