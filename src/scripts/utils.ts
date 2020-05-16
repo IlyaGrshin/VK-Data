@@ -52,7 +52,7 @@ export function* walkTree(node) {
 }
 
 export function getToken() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     parent.postMessage({
       pluginMessage: { type: 'getToken' },
     }, '*')
@@ -71,7 +71,7 @@ export function setToken(token: any) {
 }
 
 export function getUserID() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     parent.postMessage({
       pluginMessage: { type: 'getUserID' },
     }, '*')

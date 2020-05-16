@@ -3,6 +3,11 @@
     "target": "es6",
     "moduleResolution": "node",
     "jsx": "react",
+    "outDir": "dist",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": true,
+    "noImplicitAny": false,
     "typeRoots": [
       "./node_modules/@types",
       "./node_modules/@figma"
