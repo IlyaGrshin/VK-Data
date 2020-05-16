@@ -1,41 +1,49 @@
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
-import { authenticateAndGetToken } from './scripts/auth'
-import { getToken, setToken, getUserID, setUserID, shuffle } from './scripts/utils'
+import { authenticateAndGetToken } from "./scripts/auth";
+import {
+  getToken,
+  setToken,
+  getUserID,
+  setUserID,
+  shuffle,
+} from "./scripts/utils";
 
-import './figma-ds/figma-plugin-ds.min.js'
-import './figma-ds/figma-plugin-ds.min.css'
-import './css/common.css'
+import "./figma-ds/figma-plugin-ds.min.js";
+import "./figma-ds/figma-plugin-ds.min.css";
+import "./css/common.css";
 
-const API_URI = 'https://api.vk.com/method/'
+const API_URI = "https://api.vk.com/method/";
 
-window.addEventListener('message', async event => {
-  if (event.data.pluginMessage.type === 'getImageBytes') {
+window.addEventListener("message", async (event) => {
+  if (event.data.pluginMessage.type === "getImageBytes") {
     let url = event.data.pluginMessage.url;
     try {
       await fetch(url)
-        .then(result => result.arrayBuffer())
-        .then(a => parent.postMessage({ pluginMessage: new Uint8Array(a) }, '*'))
+        .then((result) => result.arrayBuffer())
+        .then((a) =>
+          parent.postMessage({ pluginMessage: new Uint8Array(a) }, "*")
+        );
     } catch (error) {
       console.error(error);
     }
   }
-})
+});
 
 function getData(method, options) {
-  let esc = encodeURIComponent
+  let esc = encodeURIComponent;
   let query = Object.keys(options)
-    .map(key => esc(key) + '=' + esc(options[key]))
-    .join('&')
+    .map((key) => esc(key) + "=" + esc(options[key]))
+    .join("&");
 
-  let url = API_URI + method + '?' + query + '&callback=jsonpCallback'
+  let url = API_URI + method + "?" + query + "&callback=jsonpCallback";
 
   return new Promise((resolve, reject) => {
-    let callbackName = 'jsonpCallback';
+    let callbackName = "jsonpCallback";
     let timeoutTrigger = window.setTimeout(function () {
       window[callbackName] = Function.prototype;
-      reject(new Error('Timeout'));
+      reject(new Error("Timeout"));
     }, 10000);
 
     window[callbackName] = function (data) {
@@ -43,8 +51,8 @@ function getData(method, options) {
       resolve(data);
     };
 
-    let script = document.createElement('script');
-    script.type = 'text/javascript';
+    let script = document.createElement("script");
+    script.type = "text/javascript";
     script.async = true;
     script.src = url;
 
@@ -58,94 +66,134 @@ function Cell(props) {
       <div className="icon icon--share"></div>
       <div className="cell_main">{props.name}</div>
     </div>
-  )
+  );
 }
 
 function Logout(props) {
   return (
-    <div className="logout" onClick={props.onClick}>Выйти</div>
-  )
+    <div className="logout" onClick={props.onClick}>
+      Выйти
+    </div>
+  );
 }
 
 class List extends React.Component<any> {
   getFriends = (ACCESS_TOKEN: any, USER_ID: any, order: any) => {
-    getData('friends.get', {
-      'user_id': USER_ID,
-      'order': order,
-      'fields': 'photo_200,occupation,city,bdate,verified',
-      'count': '20',
-      'access_token': ACCESS_TOKEN,
-      'v': '5.103'
+    getData("friends.get", {
+      user_id: USER_ID,
+      order: order,
+      fields: "photo_200,occupation,city,bdate,verified",
+      count: "20",
+      access_token: ACCESS_TOKEN,
+      v: "5.103",
     })
-      .then(result => {
-        parent.postMessage({
-          pluginMessage: { type: 'data', data: result['response']['items'], method: 'person' }
-        }, '*')
+      .then((result) => {
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "data",
+              data: result["response"]["items"],
+              method: "person",
+            },
+          },
+          "*"
+        );
       })
-      .catch(error => console.error({ error }));
-  }
+      .catch((error) => console.error({ error }));
+  };
 
   getGroups = (ACCESS_TOKEN: any, USER_ID: any, order: any) => {
     let items: [];
     const count = 100;
 
-    getData('groups.get', {
-      'user_id': USER_ID,
-      'fields': 'photo_200,activity,verified',
-      'count': count,
-      'extended': '1',
-      'access_token': ACCESS_TOKEN,
-      'v': '5.103'
-    }).then(result => {
-      items = result['response']['items'];
-
-      if(order === 'random') items = shuffle(items)
-
-      parent.postMessage({
-        pluginMessage: { type: 'data', data: items, method: 'groups' }
-      }, '*')
+    getData("groups.get", {
+      user_id: USER_ID,
+      fields: "photo_200,activity,verified",
+      count: count,
+      extended: "1",
+      access_token: ACCESS_TOKEN,
+      v: "5.103",
     })
-      .catch(error => console.error({ error }));
-  }
+      .then((result) => {
+        items = result["response"]["items"];
+
+        if (order === "random") items = shuffle(items);
+
+        parent.postMessage(
+          {
+            pluginMessage: { type: "data", data: items, method: "groups" },
+          },
+          "*"
+        );
+      })
+      .catch((error) => console.error({ error }));
+  };
 
   getByUserID = (ACCESS_TOKEN: any, USER_ID: any) => {
-    getData('users.get', {
-      'user_ids': USER_ID,
-      'fields': 'photo_200,occupation,city,bdate,verified',
-      'access_token': ACCESS_TOKEN,
-      'v': '5.103'
+    getData("users.get", {
+      user_ids: USER_ID,
+      fields: "photo_200,occupation,city,bdate,verified",
+      access_token: ACCESS_TOKEN,
+      v: "5.103",
     })
-      .then(result => {
-        parent.postMessage({
-          pluginMessage: { type: 'data', data: result['response'], method: 'person' }
-        }, '*')
+      .then((result) => {
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: "data",
+              data: result["response"],
+              method: "person",
+            },
+          },
+          "*"
+        );
       })
-      .catch(error => console.error({ error }));
-  }
+      .catch((error) => console.error({ error }));
+  };
 
   render() {
-    return <div className="list">
-      <Cell 
-        name="Друзья · Рандом" 
-        onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'random')} 
-      />
-       <Cell 
-        name="Друзья · По имени" 
-        onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'name')} 
-      />
-      <Cell 
-        name="Сообщества  · Топ" 
-        onClick={() => this.getGroups(this.props.access_token, this.props.user_id, 'hints')} 
-      />
-      <Cell 
-        name="Сообщества  · Рандом" 
-        onClick={() => this.getGroups(this.props.access_token, this.props.user_id, 'random')} 
-      />
-      <Cell 
-        name="Твой профиль" 
-        onClick={() => this.getByUserID(this.props.access_token, this.props.user_id)} 
-      />
-    </div>
+    return (
+      <div className="list">
+        <Cell
+          name="Друзья · Рандом"
+          onClick={() =>
+            this.getFriends(
+              this.props.access_token,
+              this.props.user_id,
+              "random"
+            )
+          }
+        />
+        <Cell
+          name="Друзья · По имени"
+          onClick={() =>
+            this.getFriends(this.props.access_token, this.props.user_id, "name")
+          }
+        />
+        <Cell
+          name="Сообщества  · Топ"
+          onClick={() =>
+            this.getGroups(this.props.access_token, this.props.user_id, "hints")
+          }
+        />
+        <Cell
+          name="Сообщества  · Рандом"
+          onClick={() =>
+            this.getGroups(
+              this.props.access_token,
+              this.props.user_id,
+              "random"
+            )
+          }
+        />
+        <Cell
+          name="Твой профиль"
+          onClick={() =>
+            this.getByUserID(this.props.access_token, this.props.user_id)
+          }
+        />
+      </div>
+    );
   }
 }
 
@@ -153,18 +201,24 @@ function AuthGreeting(props) {
   return (
     <div>
       <p className="type type--pos-large-normal desc">
-        Чтобы вставлять данные из ВКонтакте, Вам необходимо авторизоваться и разрешить доступ приложению
+        Чтобы вставлять данные из ВКонтакте, Вам необходимо авторизоваться
+        и разрешить доступ приложению
       </p>
-      <button className="button button--secondary styledBtn" onClick={props.onClick}>Авторизоваться</button>
+      <button
+        className="button button--secondary styledBtn"
+        onClick={props.onClick}
+      >
+        Авторизоваться
+      </button>
     </div>
-  )
+  );
 }
 
 class App extends React.Component<any> {
   state = {
     ACCESS_TOKEN: null,
-    USER_ID: null
-  }
+    USER_ID: null,
+  };
 
   async componentDidMount() {
     const token = await getToken();
@@ -172,24 +226,23 @@ class App extends React.Component<any> {
 
     this.setState({
       ACCESS_TOKEN: token,
-      USER_ID: id
-    })
+      USER_ID: id,
+    });
   }
 
   auth = () => {
-    authenticateAndGetToken()
-      .then(data => {
-        let resultToken = data.access_token;
-        let resultID = data.user_id;
-        setToken(resultToken);
-        setUserID(resultID);
+    authenticateAndGetToken().then((data) => {
+      let resultToken = data.access_token;
+      let resultID = data.user_id;
+      setToken(resultToken);
+      setUserID(resultID);
 
-        this.setState({
-          ACCESS_TOKEN: resultToken,
-          USER_ID: resultID
-        })
-      })
-  }
+      this.setState({
+        ACCESS_TOKEN: resultToken,
+        USER_ID: resultID,
+      });
+    });
+  };
 
   logout = () => {
     setToken(undefined);
@@ -197,27 +250,29 @@ class App extends React.Component<any> {
 
     this.setState({
       ACCESS_TOKEN: undefined,
-      USER_ID: undefined
-    })
-  }
+      USER_ID: undefined,
+    });
+  };
 
   render() {
     const { ACCESS_TOKEN, USER_ID } = this.state;
     let content, logout;
-    
-    if(ACCESS_TOKEN === undefined || USER_ID === undefined) {
-      content = <AuthGreeting onClick={this.auth} />
+
+    if (ACCESS_TOKEN === undefined || USER_ID === undefined) {
+      content = <AuthGreeting onClick={this.auth} />;
       logout = null;
     } else {
-      content = <List access_token={ACCESS_TOKEN} user_id={USER_ID} />
-      logout = <Logout onClick={this.logout} />
+      content = <List access_token={ACCESS_TOKEN} user_id={USER_ID} />;
+      logout = <Logout onClick={this.logout} />;
     }
 
-    return <div>
-      {content}
-      {logout}
-    </div>
+    return (
+      <div>
+        {content}
+        {logout}
+      </div>
+    );
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('react-page'))
+ReactDOM.render(<App />, document.getElementById("react-page"));

@@ -1,60 +1,59 @@
 body {
-    font-family: "Inter", sans-serif;
-    font-size: 13px;
-    padding: 0;
-    margin: 0;
-    user-select: none;
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  padding: 0;
+  margin: 0;
+  user-select: none;
 }
 
 .list {
-    padding: 4px 0;
+  padding: 4px 0;
 }
 
 .app {
-  
-    position: relative;
+  position: relative;
 }
 .desc {
-    text-align: center;
-    line-height: 20px;
-    margin: 90px 24px 24px;
+  text-align: center;
+  line-height: 20px;
+  margin: 90px 24px 24px;
 }
 
 .styledBtn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
 }
 
-.cell { 
-    display: flex;
-    padding: 8px;
-    cursor: pointer;
-    transition: all 40ms ease-out;
+.cell {
+  display: flex;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 40ms ease-out;
 }
-.cell:hover { 
-    background-color: whitesmoke;
-}
-
-.cell:active { 
-    transform: scale(0.98);
-    opacity: 0.8;
+.cell:hover {
+  background-color: whitesmoke;
 }
 
-.cell_main { 
-    padding: 7px 4px;
+.cell:active {
+  transform: scale(0.98);
+  opacity: 0.8;
+}
+
+.cell_main {
+  padding: 7px 4px;
 }
 
 .logout {
-    font-size: 12px;
-    padding: 6px 12px;
-    cursor: pointer;
-    color: #999999;
-    transition: all 40ms ease-out;
+  font-size: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: #999999;
+  transition: all 40ms ease-out;
 }
 
-.logout:hover { 
-    color: #777777;
-    text-decoration: underline;
+.logout:hover {
+  color: #777777;
+  text-decoration: underline;
 }

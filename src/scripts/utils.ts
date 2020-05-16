@@ -1,40 +1,48 @@
 export const config = {
-  main: '↳ ',
-  show: 'Show/'
-}
+  main: "↳ ",
+  show: "Show/",
+};
 
-const validShapeTypes = ['RECTANGLE', 'ELLIPSE', 'POLYGON', 'STAR', 'VECTOR', 'LINE', 'BOOLEAN_OPERATION'];
+const validShapeTypes = [
+  "RECTANGLE",
+  "ELLIPSE",
+  "POLYGON",
+  "STAR",
+  "VECTOR",
+  "LINE",
+  "BOOLEAN_OPERATION",
+];
 export function isShapeNode(node) {
   return validShapeTypes.indexOf(node.type) >= 0;
 }
 
 export function isTextNode(node) {
-  return node.type === 'TEXT';
+  return node.type === "TEXT";
 }
 
 export function isFrameNode(node) {
-  return node.type === 'FRAME';
+  return node.type === "FRAME";
 }
 
 export function isComponentOrInstance(node) {
-  return node.type === 'COMPONENT' || node.type === 'INSTANCE';
+  return node.type === "COMPONENT" || node.type === "INSTANCE";
 }
 
 export function isFramelikeNode(node) {
-  return isFrameNode(node) || isComponentOrInstance(node)
+  return isFrameNode(node) || isComponentOrInstance(node);
 }
 
 export function selectionContainsSettableLayers(selection) {
-  let getConfigKey = function() {
+  let getConfigKey = function () {
     let keys = [];
-    let conf = Object.keys(config)
-    for(var key in conf){
-       keys.push(key);
+    let conf = Object.keys(config);
+    for (var key in conf) {
+      keys.push(key);
     }
     return keys;
-  }
+  };
 
-  return selection.some(node => node.name.startsWith(getConfigKey))
+  return selection.some((node) => node.name.startsWith(getConfigKey));
 }
 
 export function getRandomElementFromArray(array) {
@@ -53,40 +61,58 @@ export function* walkTree(node) {
 
 export function getToken() {
   return new Promise((resolve) => {
-    parent.postMessage({
-      pluginMessage: { type: 'getToken' },
-    }, '*')
-    window.addEventListener('message', async event => {
-      if (event.data.pluginMessage && event.data.pluginMessage.type === 'getToken') {
-        resolve(event.data.pluginMessage.value)
+    parent.postMessage(
+      {
+        pluginMessage: { type: "getToken" },
+      },
+      "*"
+    );
+    window.addEventListener("message", async (event) => {
+      if (
+        event.data.pluginMessage &&
+        event.data.pluginMessage.type === "getToken"
+      ) {
+        resolve(event.data.pluginMessage.value);
       }
-    })
-  })
+    });
+  });
 }
 
 export function setToken(token: any) {
-  parent.postMessage({
-    pluginMessage: { type: 'setToken', value: token }
-  }, '*')
+  parent.postMessage(
+    {
+      pluginMessage: { type: "setToken", value: token },
+    },
+    "*"
+  );
 }
 
 export function getUserID() {
   return new Promise((resolve) => {
-    parent.postMessage({
-      pluginMessage: { type: 'getUserID' },
-    }, '*')
-    window.addEventListener('message', async event => {
-      if (event.data.pluginMessage && event.data.pluginMessage.type === 'getUserID') {
-        resolve(event.data.pluginMessage.value)
+    parent.postMessage(
+      {
+        pluginMessage: { type: "getUserID" },
+      },
+      "*"
+    );
+    window.addEventListener("message", async (event) => {
+      if (
+        event.data.pluginMessage &&
+        event.data.pluginMessage.type === "getUserID"
+      ) {
+        resolve(event.data.pluginMessage.value);
       }
-    })
-  })
+    });
+  });
 }
 
 export function setUserID(id: any) {
-  parent.postMessage({
-    pluginMessage: { type: 'setUserID', value: id }
-  }, '*')
+  parent.postMessage(
+    {
+      pluginMessage: { type: "setUserID", value: id },
+    },
+    "*"
+  );
 }
 
 export function shuffle(array) {
@@ -95,5 +121,5 @@ export function shuffle(array) {
     [array[i], array[j]] = [array[j], array[i]];
   }
 
-  return array
+  return array;
 }
