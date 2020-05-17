@@ -16,7 +16,8 @@ body {
 .desc {
   text-align: center;
   line-height: 20px;
-  margin: 90px 24px 24px;
+  margin: 0 24px 24px;
+  margin-top: calc(50% - 40px);
 }
 
 .styledBtn {
