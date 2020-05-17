@@ -72,8 +72,8 @@ class List extends React.Component<any> {
   getFriends = (ACCESS_TOKEN: any, USER_ID: any, order: any) => {
     getData('friends.get', {
       user_id: USER_ID,
-      order: { order },
-      fields: 'photo_200,occupation,city,bdate,verified',
+      order: order,
+      fields: 'photo_200,occupation,city,bdate,verified,online',
       count: '20',
       access_token: ACCESS_TOKEN,
       v: '5.103',
@@ -100,7 +100,7 @@ class List extends React.Component<any> {
     getData('groups.get', {
       user_id: USER_ID,
       fields: 'photo_200,activity,verified',
-      count: { count },
+      count: count,
       extended: '1',
       access_token: ACCESS_TOKEN,
       v: '5.103',
@@ -123,7 +123,7 @@ class List extends React.Component<any> {
   getByUserID = (ACCESS_TOKEN: any, USER_ID: any) => {
     getData('users.get', {
       user_ids: USER_ID,
-      fields: 'photo_200,occupation,city,bdate,verified',
+      fields: 'photo_200,occupation,city,bdate,verified,online',
       access_token: ACCESS_TOKEN,
       v: '5.103',
     })
@@ -142,9 +142,33 @@ class List extends React.Component<any> {
       .catch((error) => console.error({ error }));
   };
 
+  getFriendsHints = (ACCESS_TOKEN: any) => {
+    getData('search.getHints', {
+      fields: 'photo_200,occupation,city,bdate,verified,online',
+      limit: '20',
+      filters: 'friends',
+      access_token: ACCESS_TOKEN,
+      v: '5.103',
+    })
+      .then((result) => {
+        parent.postMessage(
+          {
+            pluginMessage: {
+              type: 'data',
+              data: result['response']['items'],
+              method: 'search',
+            },
+          },
+          '*'
+        );
+      })
+      .catch((error) => console.error({ error }));
+  };
+
   render() {
     return (
       <div className="list">
+        <Cell name="Друзья · Хинты" onClick={() => this.getFriendsHints(this.props.access_token)} />
         <Cell
           name="Друзья · Рандом"
           onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'random')}
@@ -154,7 +178,7 @@ class List extends React.Component<any> {
           onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'name')}
         />
         <Cell
-          name="Сообщества  · Топ"
+          name="Сообщества  · Хинты"
           onClick={() => this.getGroups(this.props.access_token, this.props.user_id, 'hints')}
         />
         <Cell

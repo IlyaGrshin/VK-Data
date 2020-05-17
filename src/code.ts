@@ -1,6 +1,6 @@
 import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers } from './scripts/utils';
 
-figma.showUI(__html__, { width: 300, height: 290 });
+figma.showUI(__html__, { width: 300, height: 340 });
 
 figma.ui.onmessage = async (action) => {
   switch (action.type) {
@@ -73,6 +73,10 @@ async function applyLayerTransformationFromField(layer, value?, field?) {
   if (field.includes('Hide Badge')) {
     layer.visible = value;
   }
+
+  if (field.includes('Online')) {
+    layer.visible = value;
+  }
 }
 
 async function transformNodeWithData(node, data, method) {
@@ -83,7 +87,11 @@ async function transformNodeWithData(node, data, method) {
 
   while (!(res = walker.next()).done) {
     let node = res.value;
-    if (node.name.startsWith(config.main) || node.name.startsWith(config.show)) {
+    if (
+      node.name.startsWith(config.main) ||
+      node.name.startsWith(config.show) ||
+      node.name.startsWith(config.onlineBadge)
+    ) {
       settableLayers.push(node);
     }
   }
@@ -113,13 +121,37 @@ async function transformNodeWithData(node, data, method) {
       if (field === 'Image' && method === 'groups') value = data['photo_200'];
       if (field === 'Subtitle' && method === 'groups') value = data['activity'];
 
+      // search
+      if (field === 'Title' && method === 'search')
+        value = data['profile']['first_name'] + ' ' + data['profile']['last_name'];
+      if (field === 'Image' && method === 'search') value = data['profile']['photo_200'];
+      if (field === 'Subtitle' && method === 'search') {
+        try {
+          value = ' ';
+          if (data['profile']['city']['title']) value = data['profile']['city']['title'];
+          if (data['profile']['occupation']['name']) value = data['profile']['occupation']['name'];
+        } catch (e) {
+          // console.log(e)
+        }
+      }
+
       await applyLayerTransformationFromField(layer, value, field);
     }
 
     if (layer.name.includes(config.show)) {
       const field = layer.name.replace(config.show, '');
 
-      value = field === 'Hide Badge' && data['verified'] == 1 ? true : false;
+      if (method === 'search') value = field === 'Hide Badge' && data['profile']['verified'] == 1 ? true : false;
+      else value = field === 'Hide Badge' && data['verified'] == 1 ? true : false;
+
+      await applyLayerTransformationFromField(layer, value, field);
+    }
+
+    if (layer.name.includes(config.onlineBadge)) {
+      const field = layer.name.replace(config.onlineBadge, '');
+      console.log(field);
+      if (method === 'person') value = field.includes('Online') && data['online'] == 1 ? true : false;
+      if (method === 'search') value = field.includes('Online') && data['profile']['online'] == 1 ? true : false;
 
       await applyLayerTransformationFromField(layer, value, field);
     }
