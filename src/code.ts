@@ -6,11 +6,26 @@ figma.ui.onmessage = async (action) => {
   switch (action.type) {
     case 'data':
       let selection = figma.currentPage.selection;
-
       if (!selection || selection.length === 0) figma.notify('No selection');
+
       if (selection.length === 1) {
-        for (let i = 0; i < selection.length; i++) {
-          await transformNodeWithData(selection[i], action.data[i], action.method);
+        const current = selection[0] as FrameNode | InstanceNode | ComponentNode;
+
+        if (isFramelikeNode(current)) {
+          if (current.children.every(isFramelikeNode)) {
+            const child = current.children;
+            for (let i = 0; i < child.length; i++) {
+              if (child[i].name === 'Layout') {
+                const grandson = child[0] as FrameNode | InstanceNode | ComponentNode;
+
+                for (let j = 0; j < grandson.children.length; j++) {
+                  await transformNodeWithData(grandson.children[j], action.data[j], action.method);
+                }
+              } else {
+                await transformNodeWithData(child[i], action.data[i], action.method);
+              }
+            }
+          }
         }
       } else if (selection.every(isFramelikeNode)) {
         for (let i = 0; i < selection.length; i++) {
@@ -149,7 +164,6 @@ async function transformNodeWithData(node, data, method) {
 
     if (layer.name.includes(config.onlineBadge)) {
       const field = layer.name.replace(config.onlineBadge, '');
-      console.log(field);
       if (method === 'person') value = field.includes('Online') && data['online'] == 1 ? true : false;
       if (method === 'search') value = field.includes('Online') && data['profile']['online'] == 1 ? true : false;
 
