@@ -54,7 +54,7 @@ function getData(method, options) {
 function Cell(props) {
   return (
     <div className="cell" onClick={props.onClick}>
-      <div className="icon icon--share"></div>
+      <div className="icon icon--share" />
       <div className="cell_main">{props.name}</div>
     </div>
   );
@@ -72,7 +72,7 @@ class List extends React.Component<any> {
   getFriends = (ACCESS_TOKEN: any, USER_ID: any, order: any) => {
     getData('friends.get', {
       user_id: USER_ID,
-      order: order,
+      order: { order },
       fields: 'photo_200,occupation,city,bdate,verified',
       count: '20',
       access_token: ACCESS_TOKEN,
@@ -100,7 +100,7 @@ class List extends React.Component<any> {
     getData('groups.get', {
       user_id: USER_ID,
       fields: 'photo_200,activity,verified',
-      count: count,
+      count: { count },
       extended: '1',
       access_token: ACCESS_TOKEN,
       v: '5.103',
