@@ -25,10 +25,12 @@
     "html-webpack-inline-source-plugin": "0.0.10",
     "html-webpack-plugin": "^3.2.0",
     "husky": "^4.2.5",
+    "lint-staged": ">=10",
     "prettier": "2.0.5",
-    "pretty-quick": "^2.0.1",
     "style-loader": "^1.2.1",
     "ts-loader": "^7.0.2",
+    "tslint": "^6.1.2",
+    "tslint-react": "^5.0.0",
     "typescript": "^3.5.3",
     "url-loader": "^4.1.0",
     "webpack": "^4.43.0",
@@ -36,7 +38,13 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged"
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,css,json}": [
+			"prettier --write",
+			"git add"
+		]
   }
 }

@@ -1,97 +1,76 @@
-import {
-  config,
-  walkTree,
-  isFramelikeNode,
-  selectionContainsSettableLayers,
-} from "./scripts/utils";
+import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers } from './scripts/utils';
 
 figma.showUI(__html__, { width: 300, height: 290 });
 
 figma.ui.onmessage = async (action) => {
   switch (action.type) {
-    case "data":
+    case 'data':
       let selection = figma.currentPage.selection;
 
-      if (!selection || selection.length === 0) figma.notify("No selection");
+      if (!selection || selection.length === 0) figma.notify('No selection');
       if (selection.length === 1) {
         for (let i = 0; i < selection.length; i++) {
-          await transformNodeWithData(
-            selection[i],
-            action.data[i],
-            action.method
-          );
+          await transformNodeWithData(selection[i], action.data[i], action.method);
         }
       } else if (selection.every(isFramelikeNode)) {
         for (let i = 0; i < selection.length; i++) {
-          await transformNodeWithData(
-            selection[i],
-            action.data[i],
-            action.method
-          );
+          await transformNodeWithData(selection[i], action.data[i], action.method);
         }
       } else if (selectionContainsSettableLayers(selection)) {
         for (let i = 0; i < selection.length; i++) {
-          await transformNodeWithData(
-            selection[i],
-            action.data[i],
-            action.method
-          );
+          await transformNodeWithData(selection[i], action.data[i], action.method);
         }
       } else {
         console.log(selection);
       }
       break;
 
-    case "getToken":
-      figma.clientStorage.getAsync("access_token").then((value) => {
-        figma.ui.postMessage({ type: "getToken", value });
+    case 'getToken':
+      figma.clientStorage.getAsync('access_token').then((value) => {
+        figma.ui.postMessage({ type: 'getToken', value });
       });
       break;
 
-    case "setToken":
-      await figma.clientStorage.setAsync("access_token", action.value);
+    case 'setToken':
+      await figma.clientStorage.setAsync('access_token', action.value);
       break;
 
-    case "getUserID":
-      figma.clientStorage.getAsync("user_id").then((value) => {
-        figma.ui.postMessage({ type: "getUserID", value });
+    case 'getUserID':
+      figma.clientStorage.getAsync('user_id').then((value) => {
+        figma.ui.postMessage({ type: 'getUserID', value });
       });
       break;
 
-    case "setUserID":
-      await figma.clientStorage.setAsync("user_id", action.value);
+    case 'setUserID':
+      await figma.clientStorage.setAsync('user_id', action.value);
       break;
 
-    case "snackbar":
+    case 'snackbar':
       figma.notify(action.text);
   }
 };
 
 async function applyLayerTransformationFromField(layer, value?, field?) {
-  if (field.includes("Image")) {
+  if (field.includes('Image')) {
     if (
-      value.includes("camera_200.png") ||
-      value.includes("deactivated_200.png") ||
-      value.includes("community_200.png")
+      value.includes('camera_200.png') ||
+      value.includes('deactivated_200.png') ||
+      value.includes('community_200.png')
     ) {
-      value = require("./img/camera_200.png").default;
+      value = require('./img/camera_200.png').default;
     }
     await setBackgroundFillFromImageUrl(layer, value);
   }
 
-  if (field.includes("Title") && !field.includes("Hide")) {
+  if (field.includes('Title') && !field.includes('Hide')) {
     await setTextCharactersFromValue(layer, value);
   }
 
-  if (
-    field.includes("Subtitle") &&
-    !field.includes("Second Subtitle") &&
-    !field.includes("Hide")
-  ) {
+  if (field.includes('Subtitle') && !field.includes('Second Subtitle') && !field.includes('Hide')) {
     await setTextCharactersFromValue(layer, value);
   }
 
-  if (field.includes("Hide Badge")) {
+  if (field.includes('Hide Badge')) {
     layer.visible = value;
   }
 }
@@ -104,53 +83,43 @@ async function transformNodeWithData(node, data, method) {
 
   while (!(res = walker.next()).done) {
     let node = res.value;
-    if (
-      node.name.startsWith(config.main) ||
-      node.name.startsWith(config.show)
-    ) {
+    if (node.name.startsWith(config.main) || node.name.startsWith(config.show)) {
       settableLayers.push(node);
     }
   }
 
   if (!settableLayers)
-    figma.notify(
-      "No layers are prefixed with " +
-        config.main +
-        "or" +
-        config.show +
-        " in order to set data"
-    );
+    figma.notify('No layers are prefixed with ' + config.main + 'or' + config.show + ' in order to set data');
 
   for (let layer of settableLayers) {
     if (layer.name.includes(config.main)) {
-      const field = layer.name.replace(config.main, "");
+      const field = layer.name.replace(config.main, '');
 
       // friends
-      if (field === "Title" && method === "person")
-        value = data["first_name"] + " " + data["last_name"];
-      if (field === "Image" && method === "person") value = data["photo_200"];
-      if (field === "Subtitle" && method === "person") {
+      if (field === 'Title' && method === 'person') value = data['first_name'] + ' ' + data['last_name'];
+      if (field === 'Image' && method === 'person') value = data['photo_200'];
+      if (field === 'Subtitle' && method === 'person') {
         try {
-          value = " ";
-          if (data["city"]["title"]) value = data["city"]["title"];
-          if (data["occupation"]["name"]) value = data["occupation"]["name"];
+          value = ' ';
+          if (data['city']['title']) value = data['city']['title'];
+          if (data['occupation']['name']) value = data['occupation']['name'];
         } catch (e) {
           // console.log(e)
         }
       }
 
       // groups
-      if (field === "Title" && method === "groups") value = data["name"];
-      if (field === "Image" && method === "groups") value = data["photo_200"];
-      if (field === "Subtitle" && method === "groups") value = data["activity"];
+      if (field === 'Title' && method === 'groups') value = data['name'];
+      if (field === 'Image' && method === 'groups') value = data['photo_200'];
+      if (field === 'Subtitle' && method === 'groups') value = data['activity'];
 
       await applyLayerTransformationFromField(layer, value, field);
     }
 
     if (layer.name.includes(config.show)) {
-      const field = layer.name.replace(config.show, "");
+      const field = layer.name.replace(config.show, '');
 
-      value = field === "Hide Badge" && data["verified"] == 1 ? true : false;
+      value = field === 'Hide Badge' && data['verified'] == 1 ? true : false;
 
       await applyLayerTransformationFromField(layer, value, field);
     }
@@ -164,7 +133,7 @@ function updateTextLayer(layer, update) {
 }
 
 async function setTextCharactersFromValue(layer, value) {
-  if (typeof value === "number") {
+  if (typeof value === 'number') {
     value = String(value.toLocaleString());
   }
 
@@ -177,14 +146,14 @@ async function setTextCharactersFromValue(layer, value) {
 }
 
 function getImageBytesFromUrl(url) {
-  figma.ui.postMessage({ type: "getImageBytes", url });
+  figma.ui.postMessage({ type: 'getImageBytes', url });
   return new Promise((res) => {
-    figma.ui.once("message", (value) => {
+    figma.ui.once('message', (value) => {
       let data = value as Uint8Array;
       let imageHash = figma.createImage(new Uint8Array(data)).hash;
 
       const newFill = {
-        type: "IMAGE",
+        type: 'IMAGE',
         filters: {
           contrast: 0,
           exposure: 0,
@@ -200,7 +169,7 @@ function getImageBytesFromUrl(url) {
           [0, 1, 0],
         ],
         opacity: 1,
-        scaleMode: "FILL",
+        scaleMode: 'FILL',
         scalingFactor: 0.5,
         visible: true,
       };

@@ -1,31 +1,23 @@
 export const config = {
-  main: "↳ ",
-  show: "Show/",
+  main: '↳ ',
+  show: 'Show/',
 };
 
-const validShapeTypes = [
-  "RECTANGLE",
-  "ELLIPSE",
-  "POLYGON",
-  "STAR",
-  "VECTOR",
-  "LINE",
-  "BOOLEAN_OPERATION",
-];
+const validShapeTypes = ['RECTANGLE', 'ELLIPSE', 'POLYGON', 'STAR', 'VECTOR', 'LINE', 'BOOLEAN_OPERATION'];
 export function isShapeNode(node) {
   return validShapeTypes.indexOf(node.type) >= 0;
 }
 
 export function isTextNode(node) {
-  return node.type === "TEXT";
+  return node.type === 'TEXT';
 }
 
 export function isFrameNode(node) {
-  return node.type === "FRAME";
+  return node.type === 'FRAME';
 }
 
 export function isComponentOrInstance(node) {
-  return node.type === "COMPONENT" || node.type === "INSTANCE";
+  return node.type === 'COMPONENT' || node.type === 'INSTANCE';
 }
 
 export function isFramelikeNode(node) {
@@ -63,15 +55,12 @@ export function getToken() {
   return new Promise((resolve) => {
     parent.postMessage(
       {
-        pluginMessage: { type: "getToken" },
+        pluginMessage: { type: 'getToken' },
       },
-      "*"
+      '*'
     );
-    window.addEventListener("message", async (event) => {
-      if (
-        event.data.pluginMessage &&
-        event.data.pluginMessage.type === "getToken"
-      ) {
+    window.addEventListener('message', async (event) => {
+      if (event.data.pluginMessage && event.data.pluginMessage.type === 'getToken') {
         resolve(event.data.pluginMessage.value);
       }
     });
@@ -81,9 +70,9 @@ export function getToken() {
 export function setToken(token: any) {
   parent.postMessage(
     {
-      pluginMessage: { type: "setToken", value: token },
+      pluginMessage: { type: 'setToken', value: token },
     },
-    "*"
+    '*'
   );
 }
 
@@ -91,15 +80,12 @@ export function getUserID() {
   return new Promise((resolve) => {
     parent.postMessage(
       {
-        pluginMessage: { type: "getUserID" },
+        pluginMessage: { type: 'getUserID' },
       },
-      "*"
+      '*'
     );
-    window.addEventListener("message", async (event) => {
-      if (
-        event.data.pluginMessage &&
-        event.data.pluginMessage.type === "getUserID"
-      ) {
+    window.addEventListener('message', async (event) => {
+      if (event.data.pluginMessage && event.data.pluginMessage.type === 'getUserID') {
         resolve(event.data.pluginMessage.value);
       }
     });
@@ -109,9 +95,9 @@ export function getUserID() {
 export function setUserID(id: any) {
   parent.postMessage(
     {
-      pluginMessage: { type: "setUserID", value: id },
+      pluginMessage: { type: 'setUserID', value: id },
     },
-    "*"
+    '*'
   );
 }
 

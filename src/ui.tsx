@@ -1,30 +1,22 @@
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 
-import { authenticateAndGetToken } from "./scripts/auth";
-import {
-  getToken,
-  setToken,
-  getUserID,
-  setUserID,
-  shuffle,
-} from "./scripts/utils";
+import { authenticateAndGetToken } from './scripts/auth';
+import { getToken, setToken, getUserID, setUserID, shuffle } from './scripts/utils';
 
-import "./figma-ds/figma-plugin-ds.min.js";
-import "./figma-ds/figma-plugin-ds.min.css";
-import "./css/common.css";
+import './figma-ds/figma-plugin-ds.min.js';
+import './figma-ds/figma-plugin-ds.min.css';
+import './css/common.css';
 
-const API_URI = "https://api.vk.com/method/";
+const API_URI = 'https://api.vk.com/method/';
 
-window.addEventListener("message", async (event) => {
-  if (event.data.pluginMessage.type === "getImageBytes") {
-    let url = event.data.pluginMessage.url;
+window.addEventListener('message', async (event) => {
+  if (event.data.pluginMessage.type === 'getImageBytes') {
+    const url = event.data.pluginMessage.url;
     try {
       await fetch(url)
         .then((result) => result.arrayBuffer())
-        .then((a) =>
-          parent.postMessage({ pluginMessage: new Uint8Array(a) }, "*")
-        );
+        .then((a) => parent.postMessage({ pluginMessage: new Uint8Array(a) }, '*'));
     } catch (error) {
       console.error(error);
     }
@@ -32,18 +24,17 @@ window.addEventListener("message", async (event) => {
 });
 
 function getData(method, options) {
-  let esc = encodeURIComponent;
-  let query = Object.keys(options)
-    .map((key) => esc(key) + "=" + esc(options[key]))
-    .join("&");
+  const query = Object.keys(options)
+    .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(options[key]))
+    .join('&');
 
-  let url = API_URI + method + "?" + query + "&callback=jsonpCallback";
+  const url = API_URI + method + '?' + query + '&callback=jsonpCallback';
 
   return new Promise((resolve, reject) => {
-    let callbackName = "jsonpCallback";
-    let timeoutTrigger = window.setTimeout(function () {
+    const callbackName = 'jsonpCallback';
+    const timeoutTrigger = window.setTimeout(function () {
       window[callbackName] = Function.prototype;
-      reject(new Error("Timeout"));
+      reject(new Error('Timeout'));
     }, 10000);
 
     window[callbackName] = function (data) {
@@ -51,8 +42,8 @@ function getData(method, options) {
       resolve(data);
     };
 
-    let script = document.createElement("script");
-    script.type = "text/javascript";
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
     script.async = true;
     script.src = url;
 
@@ -79,24 +70,24 @@ function Logout(props) {
 
 class List extends React.Component<any> {
   getFriends = (ACCESS_TOKEN: any, USER_ID: any, order: any) => {
-    getData("friends.get", {
+    getData('friends.get', {
       user_id: USER_ID,
       order: order,
-      fields: "photo_200,occupation,city,bdate,verified",
-      count: "20",
+      fields: 'photo_200,occupation,city,bdate,verified',
+      count: '20',
       access_token: ACCESS_TOKEN,
-      v: "5.103",
+      v: '5.103',
     })
       .then((result) => {
         parent.postMessage(
           {
             pluginMessage: {
-              type: "data",
-              data: result["response"]["items"],
-              method: "person",
+              type: 'data',
+              data: result['response']['items'],
+              method: 'person',
             },
           },
-          "*"
+          '*'
         );
       })
       .catch((error) => console.error({ error }));
@@ -106,46 +97,46 @@ class List extends React.Component<any> {
     let items: [];
     const count = 100;
 
-    getData("groups.get", {
+    getData('groups.get', {
       user_id: USER_ID,
-      fields: "photo_200,activity,verified",
+      fields: 'photo_200,activity,verified',
       count: count,
-      extended: "1",
+      extended: '1',
       access_token: ACCESS_TOKEN,
-      v: "5.103",
+      v: '5.103',
     })
       .then((result) => {
-        items = result["response"]["items"];
+        items = result['response']['items'];
 
-        if (order === "random") items = shuffle(items);
+        if (order === 'random') items = shuffle(items);
 
         parent.postMessage(
           {
-            pluginMessage: { type: "data", data: items, method: "groups" },
+            pluginMessage: { type: 'data', data: items, method: 'groups' },
           },
-          "*"
+          '*'
         );
       })
       .catch((error) => console.error({ error }));
   };
 
   getByUserID = (ACCESS_TOKEN: any, USER_ID: any) => {
-    getData("users.get", {
+    getData('users.get', {
       user_ids: USER_ID,
-      fields: "photo_200,occupation,city,bdate,verified",
+      fields: 'photo_200,occupation,city,bdate,verified',
       access_token: ACCESS_TOKEN,
-      v: "5.103",
+      v: '5.103',
     })
       .then((result) => {
         parent.postMessage(
           {
             pluginMessage: {
-              type: "data",
-              data: result["response"],
-              method: "person",
+              type: 'data',
+              data: result['response'],
+              method: 'person',
             },
           },
-          "*"
+          '*'
         );
       })
       .catch((error) => console.error({ error }));
@@ -156,42 +147,21 @@ class List extends React.Component<any> {
       <div className="list">
         <Cell
           name="Друзья · Рандом"
-          onClick={() =>
-            this.getFriends(
-              this.props.access_token,
-              this.props.user_id,
-              "random"
-            )
-          }
+          onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'random')}
         />
         <Cell
           name="Друзья · По имени"
-          onClick={() =>
-            this.getFriends(this.props.access_token, this.props.user_id, "name")
-          }
+          onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'name')}
         />
         <Cell
           name="Сообщества  · Топ"
-          onClick={() =>
-            this.getGroups(this.props.access_token, this.props.user_id, "hints")
-          }
+          onClick={() => this.getGroups(this.props.access_token, this.props.user_id, 'hints')}
         />
         <Cell
           name="Сообщества  · Рандом"
-          onClick={() =>
-            this.getGroups(
-              this.props.access_token,
-              this.props.user_id,
-              "random"
-            )
-          }
+          onClick={() => this.getGroups(this.props.access_token, this.props.user_id, 'random')}
         />
-        <Cell
-          name="Твой профиль"
-          onClick={() =>
-            this.getByUserID(this.props.access_token, this.props.user_id)
-          }
-        />
+        <Cell name="Твой профиль" onClick={() => this.getByUserID(this.props.access_token, this.props.user_id)} />
       </div>
     );
   }
@@ -201,13 +171,9 @@ function AuthGreeting(props) {
   return (
     <div>
       <p className="type type--pos-large-normal desc">
-        Чтобы вставлять данные из ВКонтакте, Вам необходимо авторизоваться
-        и разрешить доступ приложению
+        Чтобы вставлять данные из ВКонтакте, Вам необходимо авторизоваться и разрешить доступ приложению
       </p>
-      <button
-        className="button button--secondary styledBtn"
-        onClick={props.onClick}
-      >
+      <button className="button button--secondary styledBtn" onClick={props.onClick}>
         Авторизоваться
       </button>
     </div>
@@ -232,8 +198,8 @@ class App extends React.Component<any> {
 
   auth = () => {
     authenticateAndGetToken().then((data) => {
-      let resultToken = data.access_token;
-      let resultID = data.user_id;
+      const resultToken = data.access_token;
+      const resultID = data.user_id;
       setToken(resultToken);
       setUserID(resultID);
 
@@ -275,4 +241,4 @@ class App extends React.Component<any> {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById("react-page"));
+ReactDOM.render(<App />, document.getElementById('react-page'));
