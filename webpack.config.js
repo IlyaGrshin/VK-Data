@@ -1,31 +1,16 @@
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CompressionPlugin = require('compression-webpack-plugin');
-const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
+const CompressionPlugin = require('compression-webpack-plugin')
+// const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin')
 const path = require('path')
+const merge = require('webpack-merge')
 
-module.exports = (env, argv) => ({
-  mode: argv.mode === 'production' ? 'production' : 'development',
-  devtool: argv.mode === 'production' ? false : 'inline-source-map',
+const isProduction = process.env.NODE_ENV === 'production';
 
+const config = {
   entry: {
-    ui: './src/ui.tsx', // The entry point for your UI code
-    code: './src/code.ts', // The entry point for your plugin code
-  },
-
-  module: {
-    rules: [
-      { test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/ },
-      { test: /\.css$/, loader: [{ loader: 'style-loader' }, { loader: 'css-loader' }] },
-      { test: /\.(png|jpg|gif|webp|svg|zip)$/, loader: [{ loader: 'url-loader' }] },
-    ],
-  },
-
-  resolve: { 
-    extensions: ['.tsx', '.ts', '.jsx', '.js'],
-    "alias": {
-      "react": "preact/compat",
-      "react-dom": "preact/compat"
-    }
+    ui: './src/index.tsx',
+    code: './src/code.ts',
   },
 
   output: {
@@ -33,14 +18,50 @@ module.exports = (env, argv) => ({
     path: path.resolve(__dirname, 'dist'),
   },
 
+  module: {
+    rules: [
+      {test: /\.tsx?$/, use: 'ts-loader', exclude: /node_modules/},
+      {test: /\.css$/, loader: [{loader: 'style-loader'}, {loader: 'css-loader'}]},
+      {test: /\.(png|jpg|gif|webp|svg|zip)$/, loader: [{loader: 'url-loader'}]},
+    ],
+  },
+
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+    "alias": {
+      "react": "preact/compat",
+      "react-dom": "preact/compat"
+    }
+  },
+
+  devtool: 'source-map',
+
+  stats: {
+    children: false,
+  },
+
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/ui.html',
+      template: './src/index.html',
       filename: 'ui.html',
       inlineSource: '.(js)$',
       chunks: ['ui'],
     }),
-    new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/.(js|css)$/]),
+
+    new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
+    // new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/\.(js|css)$/]),
     new CompressionPlugin(),
   ],
-})
+};
+
+const devConfig = {
+  mode: 'development',
+}
+
+const prodConfig = {
+  mode: 'production',
+}
+
+module.exports = isProduction
+    ? merge(config, prodConfig)
+    : merge(config, devConfig);
