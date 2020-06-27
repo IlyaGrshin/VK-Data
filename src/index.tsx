@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { authenticateAndGetToken } from './scripts/auth';
-import { getToken, getUserID, setToken, setUserID, shuffle } from './scripts/utils';
+import {authenticateAndGetToken} from './scripts/auth';
+import {getToken, getUserID, setToken, setUserID, shuffle} from './scripts/utils';
 
 import './figma-ds/figma-plugin-ds.min.js';
 import './figma-ds/figma-plugin-ds.min.css';
@@ -168,7 +168,10 @@ class List extends React.Component<any> {
   render() {
     return (
       <div className="list">
-        <Cell name="Друзья · Хинты" onClick={() => this.getFriendsHints(this.props.access_token)} />
+        <Cell
+            name="Друзья · Хинты"
+            onClick={() => this.getFriendsHints(this.props.access_token)}
+        />
         <Cell
           name="Друзья · Рандом"
           onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'random')}
@@ -185,7 +188,10 @@ class List extends React.Component<any> {
           name="Сообщества  · Рандом"
           onClick={() => this.getGroups(this.props.access_token, this.props.user_id, 'random')}
         />
-        <Cell name="Ваш профиль" onClick={() => this.getByUserID(this.props.access_token, this.props.user_id)} />
+        <Cell
+            name="Ваш профиль"
+            onClick={() => this.getByUserID(this.props.access_token, this.props.user_id)}
+        />
       </div>
     );
   }

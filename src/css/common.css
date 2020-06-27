@@ -10,23 +10,6 @@ body {
   padding: 4px 0;
 }
 
-.app {
-  position: relative;
-}
-.desc {
-  text-align: center;
-  line-height: 20px;
-  margin: 0 24px 24px;
-  margin-top: calc(50% - 40px);
-}
-
-.styledBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: auto;
-}
-
 .cell {
   display: flex;
   padding: 8px;
@@ -40,10 +23,6 @@ body {
 .cell:active {
   transform: scale(0.98);
   opacity: 0.8;
-}
-
-.cell_main {
-  padding: 7px 4px;
 }
 
 .logout {

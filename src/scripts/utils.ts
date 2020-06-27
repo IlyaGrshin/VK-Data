@@ -30,17 +30,13 @@ export function selectionContainsSettableLayers(selection) {
   let getConfigKey = function () {
     let keys = [];
     let conf = Object.keys(config);
-    for (var key in conf) {
+    for (let key in conf) {
       keys.push(key);
     }
     return keys;
   };
 
   return selection.some((node) => node.name.startsWith(getConfigKey));
-}
-
-export function getRandomElementFromArray(array) {
-  return array[Math.floor(Math.random() * array.length)];
 }
 
 export function* walkTree(node) {
