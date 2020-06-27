@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 // const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin')
 const path = require('path')
+const webpack = require('webpack')
 const merge = require('webpack-merge')
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -27,29 +28,31 @@ const config = {
   },
 
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.jsx', '.js'],
     "alias": {
       "react": "preact/compat",
       "react-dom": "preact/compat"
     }
   },
 
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
 
   stats: {
     children: false,
   },
 
   plugins: [
+    new webpack.DefinePlugin({
+      'global': {}
+    }),
     new HtmlWebpackPlugin({
       template: './src/index.html',
       filename: 'ui.html',
       inlineSource: '.(js)$',
       chunks: ['ui'],
     }),
-
-    new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin),
-    // new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/\.(js|css)$/]),
+    new HtmlWebpackInlineSourcePlugin(),
+    //new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/.*/]),
     new CompressionPlugin(),
   ],
 };

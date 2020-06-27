@@ -185,7 +185,7 @@ class List extends React.Component<any> {
           name="Сообщества  · Рандом"
           onClick={() => this.getGroups(this.props.access_token, this.props.user_id, 'random')}
         />
-        <Cell name="Твой профиль" onClick={() => this.getByUserID(this.props.access_token, this.props.user_id)} />
+        <Cell name="Ваш профиль" onClick={() => this.getByUserID(this.props.access_token, this.props.user_id)} />
       </div>
     );
   }
