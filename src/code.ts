@@ -1,4 +1,4 @@
-import { config, walkTree, isFramelikeNode, selectionContainsSettableLayers } from './scripts/utils';
+import { config, isFramelikeNode, selectionContainsSettableLayers, walkTree } from './scripts/utils';
 
 figma.showUI(__html__, { width: 300, height: 340 });
 

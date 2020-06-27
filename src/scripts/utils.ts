@@ -5,6 +5,7 @@ export const config = {
 };
 
 const validShapeTypes = ['RECTANGLE', 'ELLIPSE', 'POLYGON', 'STAR', 'VECTOR', 'LINE', 'BOOLEAN_OPERATION'];
+
 export function isShapeNode(node) {
   return validShapeTypes.indexOf(node.type) >= 0;
 }

@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { authenticateAndGetToken } from './scripts/auth';
-import { getToken, setToken, getUserID, setUserID, shuffle } from './scripts/utils';
+import { getToken, getUserID, setToken, setUserID, shuffle } from './scripts/utils';
 
 import './figma-ds/figma-plugin-ds.min.js';
 import './figma-ds/figma-plugin-ds.min.css';
@@ -195,7 +195,7 @@ function AuthGreeting(props) {
   return (
     <div>
       <p className="type type--pos-large-normal desc">
-        Чтобы вставлять данные из ВКонтакте, Вам необходимо авторизоваться и разрешить доступ приложению
+        Чтобы вставлять данные из ВКонтакте, Вам необходимо авторизоваться и разрешить доступ приложению
       </p>
       <button className="button button--secondary styledBtn" onClick={props.onClick}>
         Авторизоваться
