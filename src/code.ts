@@ -115,36 +115,36 @@ async function transformNodeWithData(node, data, method) {
     figma.notify('No layers are prefixed with ' + config.main + 'or' + config.show + ' in order to set data');
 
   for (let layer of settableLayers) {
+    // data
     if (layer.name.includes(config.main)) {
       const field = layer.name.replace(config.main, '');
 
       // friends
-      if (field === 'Title' && method === 'person') value = data['first_name'] + ' ' + data['last_name'];
-      if (field === 'Image' && method === 'person') value = data['photo_200'];
-      if (field === 'Subtitle' && method === 'person') {
+      if (field.includes('Title') && method.includes('person')) value = data.first_name + ' ' + data.last_name;
+      if (field.includes('Image') && method.includes('person')) value = data.photo_200;
+      if (field.includes('Subtitle') && method.includes('person')) {
         try {
           value = ' ';
-          if (data['city']['title']) value = data['city']['title'];
-          if (data['occupation']['name']) value = data['occupation']['name'];
+          if (data.city.title) value = data.city.title;
+          if (data.occupation.name) value = data.occupation.name;
         } catch (e) {
           // console.log(e)
         }
       }
 
       // groups
-      if (field === 'Title' && method === 'groups') value = data['name'];
-      if (field === 'Image' && method === 'groups') value = data['photo_200'];
-      if (field === 'Subtitle' && method === 'groups') value = data['activity'];
+      if (field.includes('Title') && method.includes('groups')) value = data.name;
+      if (field.includes('Image') && method.includes('groups')) value = data.photo_200;
+      if (field.includes('Subtitle') && method.includes('groups')) value = data.activity;
 
       // search
-      if (field === 'Title' && method === 'search')
-        value = data['profile']['first_name'] + ' ' + data['profile']['last_name'];
-      if (field === 'Image' && method === 'search') value = data['profile']['photo_200'];
-      if (field === 'Subtitle' && method === 'search') {
+      if (field.includes('Title') && method.includes('search')) value = data.profile.first_name + ' ' + data.profile.last_name;
+      if (field.includes('Image') && method.includes('search')) value = data.profile.photo_200;
+      if (field.includes('Subtitle') && method.includes('search')) {
         try {
           value = ' ';
-          if (data['profile']['city']['title']) value = data['profile']['city']['title'];
-          if (data['profile']['occupation']['name']) value = data['profile']['occupation']['name'];
+          if (data.profile.city.title) value = data.profile.city.title;
+          if (data.profile.occupation.name) value = data.profile.occupation.name;
         } catch (e) {
           // console.log(e)
         }
@@ -153,19 +153,21 @@ async function transformNodeWithData(node, data, method) {
       await applyLayerTransformationFromField(layer, value, field);
     }
 
+    // verified
     if (layer.name.includes(config.show)) {
       const field = layer.name.replace(config.show, '');
 
-      if (method === 'search') value = field === 'Hide Badge' && data['profile']['verified'] == 1 ? true : false;
-      else value = field === 'Hide Badge' && data['verified'] == 1 ? true : false;
+      if (method.includes('search')) value = field.includes('Hide Badge') && data.profile.verified == 1 ? true : false;
+      else value = field.includes('Hide Badge') && data.verified == 1 ? true : false;
 
       await applyLayerTransformationFromField(layer, value, field);
     }
 
+    // online
     if (layer.name.includes(config.onlineBadge)) {
       const field = layer.name.replace(config.onlineBadge, '');
-      if (method === 'person') value = field.includes('Online') && data['online'] == 1 ? true : false;
-      if (method === 'search') value = field.includes('Online') && data['profile']['online'] == 1 ? true : false;
+      if (method.includes('person')) value = field.includes('Online') && data.online == 1 ? true : false;
+      if (method.includes('search')) value = field.includes('Online') && data.profile.online == 1 ? true : false;
 
       await applyLayerTransformationFromField(layer, value, field);
     }

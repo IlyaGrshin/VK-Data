@@ -1,7 +1,7 @@
 export const config = {
   main: '↳ ',
   show: 'Show/',
-  onlineBadge: 'x / Cell / Avatar Badge / Regular / ',
+  onlineBadge: 'x / Cell / Avatar Badge / Medium / ',
 };
 
 const validShapeTypes = ['RECTANGLE', 'ELLIPSE', 'POLYGON', 'STAR', 'VECTOR', 'LINE', 'BOOLEAN_OPERATION'];

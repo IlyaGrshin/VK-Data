@@ -37,3 +37,7 @@ body {
   color: #777777;
   text-decoration: underline;
 }
+
+.cell_main {
+  padding: 7px 4px;
+}
