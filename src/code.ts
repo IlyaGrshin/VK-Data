@@ -166,8 +166,9 @@ async function transformNodeWithData(node, data, method) {
     // online
     if (layer.name.includes(config.onlineBadge)) {
       const field = layer.name.replace(config.onlineBadge, '');
-      if (method.includes('person')) value = field.includes('Online') && data.online == 1 ? true : false;
-      if (method.includes('search')) value = field.includes('Online') && data.profile.online == 1 ? true : false;
+      if (field.includes('Online') && method.includes('person')) value = data.online == 1 ? true : false;
+      if (field.includes('Online') && method.includes('search')) value = data.profile.online == 1 ? true : false;
+      if (field.includes('Online') && method.includes('groups')) value = false;
 
       await applyLayerTransformationFromField(layer, value, field);
     }
