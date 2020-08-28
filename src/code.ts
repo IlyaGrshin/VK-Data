@@ -111,8 +111,7 @@ async function transformNodeWithData(node, data, method) {
     }
   }
 
-  if (!settableLayers)
-    figma.notify('No layers are prefixed with ' + config.main + 'or' + config.show + ' in order to set data');
+  if (!settableLayers) figma.notify('No layers are prefixed with ' + config.main + 'or' + config.show + ' in order to set data');
 
   for (let layer of settableLayers) {
     // data

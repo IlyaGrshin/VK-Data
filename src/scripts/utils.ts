@@ -41,9 +41,9 @@ export function selectionContainsSettableLayers(selection) {
 
 export function* walkTree(node) {
   yield node;
-  let children = node.children;
+  const children = node.children;
   if (children) {
-    for (let child of children) {
+    for (const child of children) {
       yield* walkTree(child);
     }
   }
