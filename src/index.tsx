@@ -251,7 +251,7 @@ class App extends React.Component<any> {
   };
 
   render() {
-    const { ACCESS_TOKEN, USER_ID } = this.state;
+    const {ACCESS_TOKEN, USER_ID} = this.state;
     let content, logout;
 
     if (ACCESS_TOKEN === undefined || USER_ID === undefined) {
