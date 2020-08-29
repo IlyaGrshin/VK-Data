@@ -1,6 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+import I18n from 'react-light-i18n'
+
 import {authenticateAndGetToken} from './scripts/auth';
 import {getToken, getUserID, setToken, setUserID, shuffle} from './scripts/utils';
 
@@ -9,6 +11,11 @@ import './figma-ds/figma-plugin-ds.min.css';
 import './css/common.css';
 
 const API_URI = 'https://api.vk.com/method/';
+
+I18n.setTranslations({
+  ru: require('./localization/ru.json'),
+  en: require('./localization/en.json')
+})
 
 window.addEventListener('message', async (event) => {
   if (event.data.pluginMessage.type === 'getImageBytes') {
@@ -63,7 +70,7 @@ function Cell(props) {
 function Logout(props) {
   return (
     <div className="logout" onClick={props.onClick}>
-      Выйти
+      {I18n.t('logout')}
     </div>
   );
 }
@@ -169,27 +176,27 @@ class List extends React.Component<any> {
     return (
       <div className="list">
         <Cell
-            name="Друзья · Хинты"
+            name={I18n.t('friendsHints')}
             onClick={() => this.getFriendsHints(this.props.access_token)}
         />
         <Cell
-          name="Друзья · Рандом"
+          name={I18n.t('friendsRandom')}
           onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'random')}
         />
         <Cell
-          name="Друзья · По имени"
+          name={I18n.t('friendsByName')}
           onClick={() => this.getFriends(this.props.access_token, this.props.user_id, 'name')}
         />
         <Cell
-          name="Сообщества  · Хинты"
+          name={I18n.t('communitiesHints')}
           onClick={() => this.getGroups(this.props.access_token, this.props.user_id, 'hints')}
         />
         <Cell
-          name="Сообщества  · Рандом"
+          name={I18n.t('communitiesHints')}
           onClick={() => this.getGroups(this.props.access_token, this.props.user_id, 'random')}
         />
         <Cell
-            name="Ваш профиль"
+            name={I18n.t('yourProfile')}
             onClick={() => this.getByUserID(this.props.access_token, this.props.user_id)}
         />
       </div>
@@ -201,10 +208,10 @@ function AuthGreeting(props) {
   return (
     <div>
       <p className="type type--pos-large-normal desc">
-        Чтобы вставлять данные из ВКонтакте, Вам необходимо авторизоваться и разрешить доступ приложению
+        {I18n.t('signInDesc')}
       </p>
       <button className="button button--secondary styledBtn" onClick={props.onClick}>
-        Авторизоваться
+        {I18n.t('signIn')}
       </button>
     </div>
   );

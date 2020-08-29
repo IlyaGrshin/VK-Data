@@ -1,6 +1,6 @@
 import {config, isFramelikeNode, selectionContainsSettableLayers, walkTree} from './scripts/utils';
 
-figma.showUI(__html__, { width: 300, height: 340 });
+figma.showUI(__html__, { width: 300, height: 330 });
 
 figma.ui.onmessage = async (action) => {
   switch (action.type) {
