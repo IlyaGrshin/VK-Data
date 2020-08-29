@@ -99,11 +99,21 @@ export function setUserID(id: any) {
   );
 }
 
-export function shuffle(array) {
+export function shuffle(array: any) {
   for (let i = array.length - 1; i > 0; i--) {
     let j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
 
   return array;
+}
+
+export function isEmpty(obj) {
+  for(var prop in obj) {
+    if(obj.hasOwnProperty(prop)) {
+      return false;
+    }
+  }
+
+  return JSON.stringify(obj) === JSON.stringify({});
 }

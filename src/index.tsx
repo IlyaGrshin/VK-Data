@@ -30,7 +30,7 @@ window.addEventListener('message', async (event) => {
   }
 });
 
-function getData(method, options) {
+function getData(method: string, options: any) {
   const query = Object.keys(options)
     .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(options[key]))
     .join('&');
@@ -76,11 +76,11 @@ function Logout(props) {
 }
 
 class List extends React.Component<any> {
-  getFriends = (ACCESS_TOKEN: any, USER_ID: any, order: any) => {
+  getFriends = (ACCESS_TOKEN: string, USER_ID: number, order: string) => {
     getData('friends.get', {
       user_id: USER_ID,
       order: order,
-      fields: 'photo_200,occupation,city,bdate,verified,online',
+      fields: 'photo_200,photo_100,occupation,city,bdate,verified,online',
       count: '20',
       access_token: ACCESS_TOKEN,
       v: '5.103',
@@ -100,13 +100,13 @@ class List extends React.Component<any> {
       .catch((error) => console.error({ error }));
   };
 
-  getGroups = (ACCESS_TOKEN: any, USER_ID: any, order: any) => {
+  getGroups = (ACCESS_TOKEN: string, USER_ID: number, order: string) => {
     let items: [];
     const count = 100;
 
     getData('groups.get', {
       user_id: USER_ID,
-      fields: 'photo_200,activity,verified',
+      fields: 'photo_200,photo_100,activity,verified',
       count: count,
       extended: '1',
       access_token: ACCESS_TOKEN,
@@ -127,10 +127,10 @@ class List extends React.Component<any> {
       .catch((error) => console.error({ error }));
   };
 
-  getByUserID = (ACCESS_TOKEN: any, USER_ID: any) => {
+  getByUserID = (ACCESS_TOKEN: string, USER_ID: number) => {
     getData('users.get', {
       user_ids: USER_ID,
-      fields: 'photo_200,occupation,city,bdate,verified,online',
+      fields: 'photo_200,photo_100,occupation,city,bdate,verified,online',
       access_token: ACCESS_TOKEN,
       v: '5.103',
     })
@@ -149,9 +149,9 @@ class List extends React.Component<any> {
       .catch((error) => console.error({ error }));
   };
 
-  getFriendsHints = (ACCESS_TOKEN: any) => {
+  getFriendsHints = (ACCESS_TOKEN: string) => {
     getData('search.getHints', {
-      fields: 'photo_200,occupation,city,bdate,verified,online',
+      fields: 'photo_200,photo_100,occupation,city,bdate,verified,online',
       limit: '20',
       filters: 'friends',
       access_token: ACCESS_TOKEN,
