@@ -1,6 +1,5 @@
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CompressionPlugin = require('compression-webpack-plugin')
 const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
@@ -52,7 +51,6 @@ const config = {
     }),
     new HtmlWebpackInlineSourcePlugin(),
     //new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/.*/]),
-    new CompressionPlugin(),
   ],
 };
 

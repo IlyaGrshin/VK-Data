@@ -1,13 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import I18n from 'react-light-i18n'
+import I18n from 'react-light-i18n';
 
 import {authenticateAndGetToken} from './scripts/auth';
 import {getToken, getUserID, setToken, setUserID, shuffle} from './scripts/utils';
 
-import './figma-ds/figma-plugin-ds.min.js';
-import './figma-ds/figma-plugin-ds.min.css';
 import './css/common.css';
 
 const API_URI = 'https://api.vk.com/method/';
@@ -207,7 +205,7 @@ class List extends React.Component<any> {
 function AuthGreeting(props) {
   return (
     <div>
-      <p className="type type--pos-large-normal desc">
+      <p className="desc">
         {I18n.t('signInDesc')}
       </p>
       <button className="button button--secondary styledBtn" onClick={props.onClick}>

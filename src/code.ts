@@ -59,9 +59,6 @@ figma.ui.onmessage = async (action) => {
     case 'setUserID':
       await figma.clientStorage.setAsync('user_id', action.value);
       break;
-
-    case 'snackbar':
-      figma.notify(action.text);
   }
 };
 
