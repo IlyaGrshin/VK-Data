@@ -65,7 +65,7 @@ class List extends React.Component<any> {
           onClick={() => getGroups(this.props.access_token, this.props.user_id, 'hints')}
         />
         <Cell
-          name={I18n.t('communitiesHints')}
+          name={I18n.t('communitiesRandom')}
           onClick={() => getGroups(this.props.access_token, this.props.user_id, 'random')}
         />
         <Cell
