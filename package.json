@@ -12,19 +12,18 @@
   "license": "MIT",
   "dependencies": {
     "@types/node": "^14.0.1",
-    "html-webpack-inline-source-plugin": "^0.0.10",
     "preact": "^10.4.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-light-i18n": "^1.0.4",
-    "webpack-merge": "^4.2.2"
+    "webpack-merge": "^5.2.0"
   },
   "devDependencies": {
     "@figma/plugin-typings": "^1.15.0",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
     "css-loader": "^5.0.0",
-    "html-webpack-plugin": "^3.2.0",
+    "html-webpack-plugin": "^4.5.0",
     "react-dev-utils": "^10.2.1",
     "style-loader": "^2.0.0",
     "ts-loader": "^8.0.3",
@@ -32,8 +31,8 @@
     "tslint-react": "^5.0.0",
     "typescript": "^4.0.2",
     "url-loader": "^4.1.0",
-    "webpack": "^4.43.0",
+    "webpack": "^5.1.2",
     "webpack-bundle-analyzer": "^3.8.0",
-    "webpack-cli": "^3.3.6"
+    "webpack-cli": "^4.0.0"
   }
 }
