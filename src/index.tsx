@@ -45,33 +45,24 @@ function Logout(props) {
 }
 
 class List extends React.Component<any> {
+  SECTIONS: any[] = [
+    { key: I18n.t('friendsHints'), click: () => getFriendsHints(this.props.access_token) },
+    { key: I18n.t('friendsRandom'), click: () => getFriends(this.props.access_token, this.props.user_id, 'random') },
+    { key: I18n.t('friendsByName'), click: () => getFriends(this.props.access_token, this.props.user_id, 'name') },
+    { key: I18n.t('communitiesHints'), click: () => getGroups(this.props.access_token, this.props.user_id, 'hints') },
+    { key: I18n.t('communitiesRandom'), click: () => getGroups(this.props.access_token, this.props.user_id, 'random') },
+    { key: I18n.t('yourProfile'), click: () => getByUserID(this.props.access_token, this.props.user_id) },
+  ]
+
   render() {
     return (
       <div className="list">
-        <Cell
-          name={I18n.t('friendsHints')}
-          onClick={() => getFriendsHints(this.props.access_token)}
-        />
-        <Cell
-          name={I18n.t('friendsRandom')}
-          onClick={() => getFriends(this.props.access_token, this.props.user_id, 'random')}
-        />
-        <Cell
-          name={I18n.t('friendsByName')}
-          onClick={() => getFriends(this.props.access_token, this.props.user_id, 'name')}
-        />
-        <Cell
-          name={I18n.t('communitiesHints')}
-          onClick={() => getGroups(this.props.access_token, this.props.user_id, 'hints')}
-        />
-        <Cell
-          name={I18n.t('communitiesRandom')}
-          onClick={() => getGroups(this.props.access_token, this.props.user_id, 'random')}
-        />
-        <Cell
-          name={I18n.t('yourProfile')}
-          onClick={() => getByUserID(this.props.access_token, this.props.user_id)}
-        />
+        {this.SECTIONS.map(section => (
+          <Cell
+            name={section.key}
+            onClick={section.click}
+          />
+        ))}
       </div>
     );
   }
