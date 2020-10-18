@@ -18,7 +18,7 @@ export async function authenticateAndGetToken() {
     } catch (e) {
       // console.error(e)
     }
-    await new Promise((resolve) => setTimeout(resolve, 500 + 1000 * Math.random()));
+    await new Promise((resolve) => setTimeout(resolve, 5000));
   }
 
   return { access_token: access_token, user_id: user_id };
