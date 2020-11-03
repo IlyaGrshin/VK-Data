@@ -48,6 +48,7 @@ const config = {
       filename: 'ui.html',
       inlineSource: '.(js)$',
       chunks: ['ui'],
+      cache: false,
     }),
     new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/.*/]),
   ],
