@@ -18,6 +18,7 @@ function getData(method: string, options: any) {
 
         window[callbackName] = function (data) {
             window.clearTimeout(timeoutTrigger);
+            if (data.error) console.log(data.error.error_msg) // TODO: access_token is expires
             resolve(data);
         };
 
