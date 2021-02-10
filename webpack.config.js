@@ -8,8 +8,8 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const config = {
   entry: {
-    ui: './src/index.tsx',
-    code: './src/code.ts',
+    ui: './app/index.tsx',
+    code: './app/code.ts',
   },
 
   output: {
@@ -44,7 +44,7 @@ const config = {
       'global': {}
     }),
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: './app/index.html',
       filename: 'ui.html',
       inlineSource: '.(js)$',
       chunks: ['ui'],
