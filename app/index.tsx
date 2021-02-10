@@ -5,9 +5,12 @@ import I18n from 'react-light-i18n';
 
 import { authenticateAndGetToken } from './src/auth'
 import { getToken, getUserID, setToken, setUserID } from './src/utils'
-import { getFriends, getGroups, getByUserID, getFriendsHints } from './src/api'
 
 import './css/common.css';
+
+import { List } from './components/List';
+import { Logout } from './components/Logout';
+import { AuthPlaceholder } from './components/AuthPlaceholder';
 
 I18n.setTranslations({
   ru: require('./localization/ru.json'),
@@ -26,61 +29,6 @@ window.addEventListener('message', async (event) => {
     }
   }
 });
-
-function Cell(props) {
-  return (
-    <div className="cell" onClick={props.onClick}>
-      <div className={props.icon} />
-      <div className="cell_main">{props.name}</div>
-    </div>
-  );
-}
-
-function Logout(props) {
-  return (
-    <div className="logout" onClick={props.onClick}>
-      {I18n.t('logout')}
-    </div>
-  );
-}
-
-class List extends React.Component<any> {
-  SECTIONS: any[] = [
-    { icon: 'icon friendsHints', label: I18n.t('friendsHints'), click: () => getFriendsHints(this.props.access_token) },
-    { icon: 'icon friendsRandom', label: I18n.t('friendsRandom'), click: () => getFriends(this.props.access_token, this.props.user_id, 'random') },
-    { icon: 'icon friendsByName', label: I18n.t('friendsByName'), click: () => getFriends(this.props.access_token, this.props.user_id, 'name') },
-    { icon: 'icon CommunityHints', label: I18n.t('communitiesHints'), click: () => getGroups(this.props.access_token, this.props.user_id, 'hints') },
-    { icon: 'icon CommunityRandom', label: I18n.t('communitiesRandom'), click: () => getGroups(this.props.access_token, this.props.user_id, 'random') },
-    { icon: 'icon Profile', label: I18n.t('yourProfile'), click: () => getByUserID(this.props.access_token, this.props.user_id) },
-  ]
-
-  render() {
-    return (
-      <div className="list">
-        {this.SECTIONS.map(section => (
-          <Cell
-            icon={section.icon}
-            name={section.label}
-            onClick={section.click}
-          />
-        ))}
-      </div>
-    );
-  }
-}
-
-function AuthGreeting(props) {
-  return (
-    <div>
-      <p className="desc">
-        {I18n.t('signInDesc')}
-      </p>
-      <button className="button button--secondary styledBtn" onClick={props.onClick}>
-        {I18n.t('signIn')}
-      </button>
-    </div>
-  );
-}
 
 class App extends React.Component<any> {
   state = {
@@ -124,10 +72,11 @@ class App extends React.Component<any> {
 
   render() {
     const { ACCESS_TOKEN, USER_ID } = this.state;
-    let content, logout;
+    let content;
+    let logout;
 
     if (ACCESS_TOKEN === undefined || USER_ID === undefined) {
-      content = <AuthGreeting onClick={this.auth} />;
+      content = <AuthPlaceholder onClick={this.auth} />;
       logout = null;
     } else {
       content = <List access_token={ACCESS_TOKEN} user_id={USER_ID} />;
