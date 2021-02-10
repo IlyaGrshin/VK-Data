@@ -2,7 +2,7 @@ import { shuffle } from './utils'
 
 const API_URI = 'https://api.vk.com/method/';
 
-function getData(method: string, options: any) {
+function getData (method: string, options: any) {
     const query = Object.keys(options)
         .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(options[key]))
         .join('&');
@@ -31,7 +31,7 @@ function getData(method: string, options: any) {
     });
 }
 
-export function getFriends(ACCESS_TOKEN: string, USER_ID: number, order: string) {
+export function getFriends (ACCESS_TOKEN: string, USER_ID: number, order: string) {
     getData('friends.get', {
         user_id: USER_ID,
         order: order,
@@ -55,7 +55,7 @@ export function getFriends(ACCESS_TOKEN: string, USER_ID: number, order: string)
         .catch((error) => console.error({ error }));
 };
 
-export function getGroups(ACCESS_TOKEN: string, USER_ID: number, order: string) {
+export function getGroups (ACCESS_TOKEN: string, USER_ID: number, order: string) {
     let items: [];
     const count = 100;
 
@@ -82,7 +82,7 @@ export function getGroups(ACCESS_TOKEN: string, USER_ID: number, order: string) 
         .catch((error) => console.error({ error }));
 };
 
-export function getByUserID(ACCESS_TOKEN: string, USER_ID: number) {
+export function getByUserID (ACCESS_TOKEN: string, USER_ID: number) {
     getData('users.get', {
         user_ids: USER_ID,
         fields: 'photo_200,photo_100,occupation,city,bdate,verified,online',
@@ -104,7 +104,7 @@ export function getByUserID(ACCESS_TOKEN: string, USER_ID: number) {
         .catch((error) => console.error({ error }));
 };
 
-export function getFriendsHints(ACCESS_TOKEN: string) {
+export function getFriendsHints (ACCESS_TOKEN: string) {
     getData('search.getHints', {
         fields: 'photo_200,photo_100,occupation,city,bdate,verified,online',
         limit: '20',
