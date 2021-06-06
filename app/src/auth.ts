@@ -1,7 +1,7 @@
-const HOST = 'https://www.ilyagrshn.com';
+const HOST = 'https://www.ilyagrshn.com/pluginServer';
 
 export async function authenticateAndGetToken() {
-  const { read_key, write_key } = await (await fetch(HOST + '/keys')).json();
+  const { read_key, write_key } = await (await fetch(HOST + '/keys.php')).json();
   let url = authUrl(write_key);
   window.open(url);
 
@@ -9,7 +9,7 @@ export async function authenticateAndGetToken() {
   let user_id;
   while (true) {
     try {
-      const json = await (await fetch(HOST + '/finish?read_key=' + encodeURIComponent(read_key))).json();
+      const json = await (await fetch(HOST + '/finish.php?read_key=' + encodeURIComponent(read_key))).json();
       if (json !== null) {
         access_token = json.access_token;
         user_id = json.user_id;
@@ -25,5 +25,5 @@ export async function authenticateAndGetToken() {
 }
 
 function authUrl(write_key) {
-  return HOST + '/start?write_key=' + write_key;
+  return HOST + '/start.php?write_key=' + write_key;
 }
