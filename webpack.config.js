@@ -49,6 +49,7 @@ const config = {
       inlineSource: '.(js)$',
       chunks: ['ui'],
       cache: false,
+      scriptLoading: 'blocking',
     }),
     new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/.*/]),
   ],
