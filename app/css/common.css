@@ -42,7 +42,7 @@ body {
 
 .button--secondary {
   font-weight: 500; 
-  font-size: 11px; 
+  font-size: 12px; 
   line-height: 16px; 
   letter-spacing: 0.005em; 
   color: rgba(0, 0, 0, 0.8); 
@@ -102,3 +102,58 @@ body {
 .CommunityHints { background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10 8.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM7 7a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm9 1.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zM13.75 8a2.25 2.25 0 1 1 4.5 0 2.25 2.25 0 0 1-4.5 0zm-9.5 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0zM3.5 5.75a2.25 2.25 0 1 1 0 4.5 2.25 2.25 0 0 1 0-4.5zM6.75 16a3.25 3.25 0 0 1 6.5 0h1.5a4.75 4.75 0 1 0-9.5 0h1.5zM16 12.75c-.264 0-.516.045-.75.128l-.5-1.414a3.75 3.75 0 0 1 5 3.536h-1.5A2.25 2.25 0 0 0 16 12.75zm-11.25.128a2.25 2.25 0 0 0-3 2.122H.25a3.75 3.75 0 0 1 5-3.536l-.5 1.414z' fill='%23000'/%3E%3C/svg%3E"); }
 .CommunityRandom { background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7 7a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3 1.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z' fill='%23000'/%3E%3Cpath d='M6.75 16a3.25 3.25 0 0 1 6.5 0h1.5a4.75 4.75 0 1 0-9.5 0h1.5z' fill='%23000'/%3E%3Cg opacity='.4' fill='%23000'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M5.75 8a2.25 2.25 0 1 0-4.5 0 2.25 2.25 0 0 0 4.5 0zm-2.25.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5z'/%3E%3Cpath d='M4.75 12.878a2.25 2.25 0 0 0-3 2.122H.25a3.75 3.75 0 0 1 5-3.536l-.5 1.414z'/%3E%3C/g%3E%3Cg opacity='.4' fill='%23000'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M13.75 8a2.25 2.25 0 1 1 4.5 0 2.25 2.25 0 0 1-4.5 0zm2.25.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z'/%3E%3Cpath d='M15.25 12.878a2.25 2.25 0 0 1 3 2.122h1.5a3.75 3.75 0 0 0-5-3.536l.5 1.414z'/%3E%3C/g%3E%3C/svg%3E"); }
 .Profile { background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M14.379 14.804a6.5 6.5 0 1 0-8.758 0A7.963 7.963 0 0 1 10 13.5c1.616 0 3.12.48 4.379 1.304zm-1.345.946A6.471 6.471 0 0 0 10 15a6.471 6.471 0 0 0-3.034.75c.906.479 1.938.75 3.034.75a6.471 6.471 0 0 0 3.034-.75zM10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-7.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm0 1.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6z' fill='%23000'/%3E%3C/svg%3E"); }
+
+.spinner,
+.spinner:before,
+.spinner:after {
+  border-radius: 50%;
+}
+
+.spinner {
+  color: #000000;
+  font-size: 12px;
+  text-indent: -99999em;
+  margin: 55px auto;
+  position: relative;
+  width: 120px;
+  height: 120px;
+  box-shadow: inset 0 0 0 12px;
+  transform: translateZ(0);
+}
+
+.spinner:before,
+.spinner:after {
+  position: absolute;
+  content: '';
+}
+
+.spinner:before {
+  width: 62px;
+  height: 122px;
+  background: white;
+  border-radius: 122px 0 0 122px;
+  top: -1px;
+  left: -1px;
+  transform-origin: 61px 61px;
+  animation: load 2s infinite ease 1.5s;
+}
+
+.spinner:after {
+  width: 62px;
+  height: 122px;
+  background: white;
+  border-radius: 0 122px 122px 0;
+  top: -1px;
+  left: 59px;
+  transform-origin: 1px 61px;
+  animation: load 2s infinite ease;
+}
+
+@keyframes load {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

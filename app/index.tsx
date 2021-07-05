@@ -34,6 +34,7 @@ class App extends React.Component<any> {
   state = {
     ACCESS_TOKEN: null,
     USER_ID: null,
+    loadingState: false,
   };
 
   async componentDidMount() {
@@ -47,6 +48,10 @@ class App extends React.Component<any> {
   }
 
   auth = () => {
+    this.setState({
+      loadingState: true
+    })
+
     authenticateAndGetToken().then((data) => {
       const resultToken = data.access_token;
       const resultID = data.user_id;
@@ -67,16 +72,17 @@ class App extends React.Component<any> {
     this.setState({
       ACCESS_TOKEN: undefined,
       USER_ID: undefined,
+      loadingState: false
     });
   };
 
   render() {
-    const { ACCESS_TOKEN, USER_ID } = this.state;
+    const { ACCESS_TOKEN, USER_ID, loadingState } = this.state;
     let content;
     let logout;
 
     if (ACCESS_TOKEN === undefined || USER_ID === undefined) {
-      content = <AuthPlaceholder onClick={this.auth} />;
+      content = <AuthPlaceholder loadingState={loadingState} onClick={this.auth} />;
       logout = null;
     } else {
       content = <List access_token={ACCESS_TOKEN} user_id={USER_ID} />;
