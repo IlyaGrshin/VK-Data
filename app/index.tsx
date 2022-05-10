@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import I18n from 'react-light-i18n';
 
@@ -98,4 +98,6 @@ class App extends React.Component<any> {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('react-page'));
+const container = document.getElementById('app');
+const root = createRoot(container);
+root.render(<App />);

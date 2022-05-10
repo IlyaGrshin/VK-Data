@@ -71,7 +71,8 @@ async function applyLayerTransformationFromField(layer, value?, field?) {
     if (
       value.includes('camera_200.png') ||
       value.includes('deactivated_200.png') ||
-      value.includes('community_200.png')
+      value.includes('community_200.png') ||
+      value.includes('deactivated_kis_200.png')
     ) {
       value = require('./img/camera_200.png').default;
     }
