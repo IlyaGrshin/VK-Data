@@ -9,6 +9,7 @@ body {
   padding: 0;
   margin: 0;
   user-select: none;
+  background: var(--figma-color-bg);
 }
 
 .list {
@@ -25,15 +26,16 @@ body {
   margin: calc(50% - 40px) 24px 24px;
   line-height: 24px; 
   letter-spacing: -0.001em; 
+  color: var(--figma-color-text);
 }
 
 .button { 
   display: inline-block; 
   -ms-flex-negative: 0; 
   flex-shrink: 0; 
-  height: 30px; 
+  height: 32px; 
   margin: 1px 0 1px 0; 
-  padding: 5px 16px 5px 16px; 
+  padding: 6px 16px 6px 16px; 
   text-decoration: none; 
   border: 2px solid transparent; 
   border-radius: 6px; 
@@ -42,12 +44,17 @@ body {
 
 .button--secondary {
   font-weight: 500; 
-  font-size: 12px; 
+  font-size: 13px; 
   line-height: 16px; 
   letter-spacing: 0.005em; 
-  color: rgba(0, 0, 0, 0.8); 
-  border: 1px solid rgba(0, 0, 0, 0.8); 
-  background-color: #fff; 
+  color: var(--figma-color-text-onbrand); 
+  background: var(--figma-color-bg-brand); 
+  transition: all 40ms ease-out;
+}
+
+.button--secondary:hover {
+  cursor: pointer;
+  background: var(--figma-color-bg-brand-hover);
 }
 
 .styledBtn {
@@ -64,7 +71,7 @@ body {
   transition: all 40ms ease-out;
 }
 .cell:hover {
-  background-color: whitesmoke;
+  background-color: var(--figma-color-bg-hover);
 }
 
 .cell:active {
@@ -76,17 +83,18 @@ body {
   font-size: 12px;
   padding: 6px 12px;
   cursor: pointer;
-  color: #999999;
+  color: var(--figma-color-text-secondary);
   transition: all 40ms ease-out;
 }
 
 .logout:hover {
-  color: #777777;
+  color: var(--figma-color-text-secondary-hover);
   text-decoration: underline;
 }
 
 .cell_main {
   padding: 2.5px 0 0 12px;
+  color: var(--figma-color-text);
 }
 
 .icon { 
@@ -94,14 +102,15 @@ body {
   height: 20px; 
   background-repeat: no-repeat; 
   background-position: 0 0; 
+  background: var(--figma-color-text);
 }
 
-.friendsHints { background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 6.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zM6 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5-1.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zM14 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z' fill='%23000'/%3E%3Cpath d='M14 12.25A3.75 3.75 0 0 0 10.25 16h-1.5a5.25 5.25 0 1 1 10.5 0h-1.5A3.75 3.75 0 0 0 14 12.25zM2.25 16a3.75 3.75 0 0 1 5.833-3.119l.834-1.247A5.25 5.25 0 0 0 .75 16h1.5z' fill='%23000'/%3E%3C/svg%3E"); }
-.friendsRandom { background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg opacity='.4' fill='%23000'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11 6.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zM14 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z'/%3E%3Cpath d='M10.25 16a3.75 3.75 0 1 1 7.5 0h1.5a5.25 5.25 0 1 0-10.5 0h1.5z'/%3E%3C/g%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 6.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zM6 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z' fill='%23000'/%3E%3Cpath d='M2.25 16a3.75 3.75 0 0 1 5.833-3.119l.834-1.247A5.25 5.25 0 0 0 .75 16h1.5z' fill='%23000'/%3E%3C/svg%3E"); }
-.friendsByName { background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11 6.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zM14 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z' fill='%23000'/%3E%3Cpath d='M10.25 16a3.75 3.75 0 1 1 7.5 0h1.5a5.25 5.25 0 1 0-10.5 0h1.5z' fill='%23000'/%3E%3Cg opacity='.4' fill='%23000'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 6.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zM6 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z'/%3E%3Cpath d='M2.25 16a3.75 3.75 0 0 1 5.833-3.119l.834-1.247A5.25 5.25 0 0 0 .75 16h1.5z'/%3E%3C/g%3E%3C/svg%3E"); }
-.CommunityHints { background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10 8.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM7 7a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm9 1.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zM13.75 8a2.25 2.25 0 1 1 4.5 0 2.25 2.25 0 0 1-4.5 0zm-9.5 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0zM3.5 5.75a2.25 2.25 0 1 1 0 4.5 2.25 2.25 0 0 1 0-4.5zM6.75 16a3.25 3.25 0 0 1 6.5 0h1.5a4.75 4.75 0 1 0-9.5 0h1.5zM16 12.75c-.264 0-.516.045-.75.128l-.5-1.414a3.75 3.75 0 0 1 5 3.536h-1.5A2.25 2.25 0 0 0 16 12.75zm-11.25.128a2.25 2.25 0 0 0-3 2.122H.25a3.75 3.75 0 0 1 5-3.536l-.5 1.414z' fill='%23000'/%3E%3C/svg%3E"); }
-.CommunityRandom { background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7 7a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3 1.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z' fill='%23000'/%3E%3Cpath d='M6.75 16a3.25 3.25 0 0 1 6.5 0h1.5a4.75 4.75 0 1 0-9.5 0h1.5z' fill='%23000'/%3E%3Cg opacity='.4' fill='%23000'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M5.75 8a2.25 2.25 0 1 0-4.5 0 2.25 2.25 0 0 0 4.5 0zm-2.25.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5z'/%3E%3Cpath d='M4.75 12.878a2.25 2.25 0 0 0-3 2.122H.25a3.75 3.75 0 0 1 5-3.536l-.5 1.414z'/%3E%3C/g%3E%3Cg opacity='.4' fill='%23000'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M13.75 8a2.25 2.25 0 1 1 4.5 0 2.25 2.25 0 0 1-4.5 0zm2.25.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z'/%3E%3Cpath d='M15.25 12.878a2.25 2.25 0 0 1 3 2.122h1.5a3.75 3.75 0 0 0-5-3.536l.5 1.414z'/%3E%3C/g%3E%3C/svg%3E"); }
-.Profile { background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M14.379 14.804a6.5 6.5 0 1 0-8.758 0A7.963 7.963 0 0 1 10 13.5c1.616 0 3.12.48 4.379 1.304zm-1.345.946A6.471 6.471 0 0 0 10 15a6.471 6.471 0 0 0-3.034.75c.906.479 1.938.75 3.034.75a6.471 6.471 0 0 0 3.034-.75zM10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-7.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm0 1.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6z' fill='%23000'/%3E%3C/svg%3E"); }
+.friendsHints { -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 6.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zM6 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5-1.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zM14 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z' fill='%23000'/%3E%3Cpath d='M14 12.25A3.75 3.75 0 0 0 10.25 16h-1.5a5.25 5.25 0 1 1 10.5 0h-1.5A3.75 3.75 0 0 0 14 12.25zM2.25 16a3.75 3.75 0 0 1 5.833-3.119l.834-1.247A5.25 5.25 0 0 0 .75 16h1.5z' fill='%23000'/%3E%3C/svg%3E"); }
+.friendsRandom { -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg opacity='.4' fill='%23000'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11 6.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zM14 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z'/%3E%3Cpath d='M10.25 16a3.75 3.75 0 1 1 7.5 0h1.5a5.25 5.25 0 1 0-10.5 0h1.5z'/%3E%3C/g%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 6.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zM6 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z' fill='%23000'/%3E%3Cpath d='M2.25 16a3.75 3.75 0 0 1 5.833-3.119l.834-1.247A5.25 5.25 0 0 0 .75 16h1.5z' fill='%23000'/%3E%3C/svg%3E"); }
+.friendsByName { -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11 6.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zM14 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z' fill='%23000'/%3E%3Cpath d='M10.25 16a3.75 3.75 0 1 1 7.5 0h1.5a5.25 5.25 0 1 0-10.5 0h1.5z' fill='%23000'/%3E%3Cg opacity='.4' fill='%23000'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M3 6.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0zM6 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z'/%3E%3Cpath d='M2.25 16a3.75 3.75 0 0 1 5.833-3.119l.834-1.247A5.25 5.25 0 0 0 .75 16h1.5z'/%3E%3C/g%3E%3C/svg%3E"); }
+.CommunityHints { -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10 8.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM7 7a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm9 1.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zM13.75 8a2.25 2.25 0 1 1 4.5 0 2.25 2.25 0 0 1-4.5 0zm-9.5 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0zM3.5 5.75a2.25 2.25 0 1 1 0 4.5 2.25 2.25 0 0 1 0-4.5zM6.75 16a3.25 3.25 0 0 1 6.5 0h1.5a4.75 4.75 0 1 0-9.5 0h1.5zM16 12.75c-.264 0-.516.045-.75.128l-.5-1.414a3.75 3.75 0 0 1 5 3.536h-1.5A2.25 2.25 0 0 0 16 12.75zm-11.25.128a2.25 2.25 0 0 0-3 2.122H.25a3.75 3.75 0 0 1 5-3.536l-.5 1.414z' fill='%23000'/%3E%3C/svg%3E"); }
+.CommunityRandom { -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M7 7a3 3 0 1 1 6 0 3 3 0 0 1-6 0zm3 1.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z' fill='%23000'/%3E%3Cpath d='M6.75 16a3.25 3.25 0 0 1 6.5 0h1.5a4.75 4.75 0 1 0-9.5 0h1.5z' fill='%23000'/%3E%3Cg opacity='.4' fill='%23000'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M5.75 8a2.25 2.25 0 1 0-4.5 0 2.25 2.25 0 0 0 4.5 0zm-2.25.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5z'/%3E%3Cpath d='M4.75 12.878a2.25 2.25 0 0 0-3 2.122H.25a3.75 3.75 0 0 1 5-3.536l-.5 1.414z'/%3E%3C/g%3E%3Cg opacity='.4' fill='%23000'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M13.75 8a2.25 2.25 0 1 1 4.5 0 2.25 2.25 0 0 1-4.5 0zm2.25.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z'/%3E%3Cpath d='M15.25 12.878a2.25 2.25 0 0 1 3 2.122h1.5a3.75 3.75 0 0 0-5-3.536l.5 1.414z'/%3E%3C/g%3E%3C/svg%3E"); }
+.Profile { -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='20' height='20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M14.379 14.804a6.5 6.5 0 1 0-8.758 0A7.963 7.963 0 0 1 10 13.5c1.616 0 3.12.48 4.379 1.304zm-1.345.946A6.471 6.471 0 0 0 10 15a6.471 6.471 0 0 0-3.034.75c.906.479 1.938.75 3.034.75a6.471 6.471 0 0 0 3.034-.75zM10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-7.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm0 1.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6z' fill='%23000'/%3E%3C/svg%3E"); }
 
 .spinner,
 .spinner:before,
@@ -109,7 +118,7 @@ body {
   border-radius: 50%;
 }
 .spinner {
-  color: #000000;
+  color: var(--figma-color-bg-brand);
   font-size: 12px;
   text-indent: -99999em;
   margin: 1px auto;
@@ -127,7 +136,7 @@ body {
 .spinner:before {
   width: 14.6px;
   height: 28.6px;
-  background: white;
+  background: var(--figma-color-bg);
   border-radius: 28.6px 0 0 28.6px;
   top: -0.28px;
   left: -0.28px;
@@ -137,7 +146,7 @@ body {
 .spinner:after {
   width: 14.6px;
   height: 28.6px;
-  background: white;
+  background: var(--figma-color-bg);
   border-radius: 0 28.6px 28.6px 0;
   top: -0.28px;
   left: 13.7px;
