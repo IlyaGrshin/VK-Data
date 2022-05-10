@@ -3,9 +3,6 @@
   "version": "1.0.1",
   "description": "Figma Plugin with a data from VK",
   "main": "code.js",
-  "editorType": [
-    "figma"
-  ],
   "scripts": {
     "build": "webpack --mode=production",
     "build:watch": "webpack --mode=development --watch",
