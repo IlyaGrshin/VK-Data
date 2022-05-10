@@ -63,7 +63,7 @@ figma.ui.onmessage = async (action) => {
 };
 
 async function applyLayerTransformationFromField(layer, value?, field?) {
-  if (field.includes('Image')) {
+  if (field.includes('Image') || field.includes('Avatar')) {
     if (
       value.includes('camera_200.png') ||
       value.includes('deactivated_200.png') ||
@@ -117,7 +117,7 @@ async function transformNodeWithData(node, data, method) {
 
       // friends
       if (field.includes('Title') && method.includes('person')) value = data.first_name + ' ' + data.last_name;
-      if (field.includes('Image') && method.includes('person')) value = isEmpty(data.photo_200) ? data.photo_100 : data.photo_200;
+      if ((field.includes('Image') || field.includes('Avatar')) && method.includes('person')) value = isEmpty(data.photo_200) ? data.photo_100 : data.photo_200;
       if (field.includes('Subtitle') && method.includes('person')) {
         try {
           value = ' ';
@@ -130,12 +130,12 @@ async function transformNodeWithData(node, data, method) {
 
       // groups
       if (field.includes('Title') && method.includes('groups')) value = data.name;
-      if (field.includes('Image') && method.includes('groups')) value = isEmpty(data.photo_200) ? data.photo_100 : data.photo_200;
+      if ((field.includes('Image') || field.includes('Avatar')) && method.includes('groups')) value = isEmpty(data.photo_200) ? data.photo_100 : data.photo_200;
       if (field.includes('Subtitle') && method.includes('groups')) value = data.activity;
 
       // search
       if (field.includes('Title') && method.includes('search')) value = data.profile.first_name + ' ' + data.profile.last_name;
-      if (field.includes('Image') && method.includes('search')) value = isEmpty(data.profile.photo_200) ? data.profile.photo_100 : data.profile.photo_200;
+      if ((field.includes('Image') || field.includes('Avatar')) && method.includes('search')) value = isEmpty(data.profile.photo_200) ? data.profile.photo_100 : data.profile.photo_200;
       if (field.includes('Subtitle') && method.includes('search')) {
         try {
           value = ' ';
