@@ -118,38 +118,52 @@ async function transformNodeWithData(node, data, method) {
 	}
 
 	for (let layer of settableLayers) {
-		// data
+		let methodPerson = method.includes('person');
+		let methodGroups = method.includes('groups');
+		let methodSearch = method.includes('search');
+
 		if (layer.name.includes(config.main)) {
 			const field = layer.name.replace(config.main, '');
 
+			let fieldTitle = field.includes('Title');
+			let fieldSubtitle = field.includes('Subtitle');
+			let fieldAvatar = field.includes('Avatar');
+			let fieldImage = field.includes('Image');
+
 			// friends
-			if (field.includes('Title') && method.includes('person')) value = data.first_name + ' ' + data.last_name;
-			if ((field.includes('Image') || field.includes('Avatar')) && method.includes('person')) value = isEmpty(data.photo_200) ? data.photo_100 : data.photo_200;
-			if (field.includes('Subtitle') && method.includes('person')) {
-				try {
-					value = ' ';
-					if (data.city.title) value = data.city.title;
-					if (data.occupation.name) value = data.occupation.name;
-				} catch (e) {
-					// console.log(e)
+			if (methodPerson) {
+				if (fieldTitle) value = `${data.first_name} ${data.last_name}`;
+				if (fieldImage || fieldAvatar) value = isEmpty(data.photo_200) ? data.photo_100 : data.photo_200;
+				if (fieldSubtitle) {
+					try {
+						value = ` `;
+						if (data.city.title) value = data.city.title;
+						if (data.occupation.name) value = data.occupation.name;
+					} catch (e) {
+						// console.log(e)
+					}
 				}
 			}
 
 			// groups
-			if (field.includes('Title') && method.includes('groups')) value = data.name;
-			if ((field.includes('Image') || field.includes('Avatar')) && method.includes('groups')) value = isEmpty(data.photo_200) ? data.photo_100 : data.photo_200;
-			if (field.includes('Subtitle') && method.includes('groups')) value = data.activity;
+			if (methodGroups) {
+				if (fieldTitle) value = data.name;
+				if (fieldImage || fieldAvatar) value = isEmpty(data.photo_200) ? data.photo_100 : data.photo_200;
+				if (fieldSubtitle) value = data.activity;
+			}
 
 			// search
-			if (field.includes('Title') && method.includes('search')) value = data.profile.first_name + ' ' + data.profile.last_name;
-			if ((field.includes('Image') || field.includes('Avatar')) && method.includes('search')) value = isEmpty(data.profile.photo_200) ? data.profile.photo_100 : data.profile.photo_200;
-			if (field.includes('Subtitle') && method.includes('search')) {
-				try {
-					value = ' ';
-					if (data.profile.city.title) value = data.profile.city.title;
-					if (data.profile.occupation.name) value = data.profile.occupation.name;
-				} catch (e) {
-					// console.log(e)
+			if (methodSearch) {
+				if (fieldTitle) value = `${data.profile.first_name} ${data.profile.last_name}`;
+				if (fieldImage || fieldAvatar) value = isEmpty(data.profile.photo_200) ? data.profile.photo_100 : data.profile.photo_200;
+				if (fieldSubtitle) {
+					try {
+						value = ` `;
+						if (data.profile.city.title) value = data.profile.city.title;
+						if (data.profile.occupation.name) value = data.profile.occupation.name;
+					} catch (e) {
+						// console.log(e)
+					}
 				}
 			}
 
@@ -160,7 +174,7 @@ async function transformNodeWithData(node, data, method) {
 		if (layer.name.includes(config.show)) {
 			const field = layer.name.replace(config.show, '');
 
-			if (method.includes('search')) value = field.includes('Hide Badge') && data.profile.verified == 1 ? true : false;
+			if (methodSearch) value = field.includes('Hide Badge') && data.profile.verified == 1 ? true : false;
 			else value = field.includes('Hide Badge') && data.verified == 1 ? true : false;
 
 			await applyLayerTransformationFromField(layer, value, field);
@@ -169,9 +183,12 @@ async function transformNodeWithData(node, data, method) {
 		// online
 		if (layer.name.includes(config.onlineBadge)) {
 			const field = layer.name.replace(config.onlineBadge, '');
-			if (field.includes('Online') && method.includes('person')) value = data.online == 1 ? true : false;
-			if (field.includes('Online') && method.includes('search')) value = data.profile.online == 1 ? true : false;
-			if (field.includes('Online') && method.includes('groups')) value = false;
+			
+			if (field.includes('Online')) {
+				if (methodPerson) value = data.online == 1 ? true : false;
+				if (methodSearch) value = data.profile.online == 1 ? true : false;
+				if (methodGroups) value = false;
+			}
 
 			await applyLayerTransformationFromField(layer, value, field);
 		}
