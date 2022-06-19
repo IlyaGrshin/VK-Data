@@ -10,15 +10,17 @@ figma.ui.onmessage = async (action) => {
 	switch (action.type) {
 		case 'data':
 			let selection = figma.currentPage.selection;
-			if (!selection || selection.length === 0) figma.notify('No selection');
-
-			if (selection.length === 1) {
+			if (!selection || selection.length === 0) {
+				figma.notify('No selection');
+			} else if (selection.length === 1) {
 				const current = selection[0] as FrameNode | InstanceNode | ComponentNode;
 
 				if (isFramelikeNode(current)) {
 					if (current.children.every(isFramelikeNode)) {
 						const child = current.children;
 						for (let i = 0; i < child.length; i++) {
+
+							// danger
 							if (child[i].name === 'Layout') {
 								const grandson = child[0] as FrameNode | InstanceNode | ComponentNode;
 
@@ -31,11 +33,7 @@ figma.ui.onmessage = async (action) => {
 						}
 					}
 				}
-			} else if (selection.every(isFramelikeNode)) {
-				for (let i = 0; i < selection.length; i++) {
-					await transformNodeWithData(selection[i], action.data[i], action.method);
-				}
-			} else if (selectionContainsSettableLayers(selection)) {
+			} else if (selection.every(isFramelikeNode) || selectionContainsSettableLayers(selection)) {
 				for (let i = 0; i < selection.length; i++) {
 					await transformNodeWithData(selection[i], action.data[i], action.method);
 				}
@@ -122,6 +120,7 @@ async function transformNodeWithData(node, data, method) {
 		let methodGroups = method.includes('groups');
 		let methodSearch = method.includes('search');
 
+		// user lists
 		if (layer.name.includes(config.main)) {
 			const field = layer.name.replace(config.main, '');
 
