@@ -7,7 +7,7 @@ export function InfoBanner(props) {
 
   return (
   	<div className="infoBanner" style={{ display: bannerState }}>
-    	{I18n.t('infoBanner')} <pre>{config.main} {config.avatar}</pre>, <pre>{config.main} {config.title}</pre>.
+    	{I18n.t('infoBanner')} <pre>{config.main} {config.avatar}</pre>, <pre>{config.main} {config.title}</pre>
 			<div className="infoButton" onClick={props.onClick}>{I18n.t('infoBannerButton')}</div>
     </div>
   )
