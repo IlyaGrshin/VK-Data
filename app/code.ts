@@ -61,11 +61,21 @@ figma.ui.onmessage = async (action) => {
 		case 'setUserID':
 			await figma.clientStorage.setAsync('user_id', action.value);
 		break;
+
+		case 'getBannerShow':
+			figma.clientStorage.getAsync('bannerShow').then((value) => {
+				figma.ui.postMessage({ type: 'getBannerShow', value});
+			});
+		break;
+
+		case 'setBannerShow':
+			await figma.clientStorage.setAsync('bannerShow', action.value);
+		break;
 	}
 };
 
 async function applyLayerTransformationFromField(layer, value?, field?) {
-	if (field.includes('Image') || field.includes('Avatar')) {
+	if (field.includes(config.image) || field.includes(config.avatar)) {
 		if (
 			value.includes('camera_200.png') ||
 			value.includes('deactivated_200.png') ||
@@ -77,19 +87,19 @@ async function applyLayerTransformationFromField(layer, value?, field?) {
 			await setBackgroundFillFromImageUrl(layer, value);
 	}
 
-	if (field.includes('Title') && !field.includes('Hide')) {
+	if (field.includes(config.title) && !field.includes(config.hide)) {
 		await setTextCharactersFromValue(layer, value);
 	}
 
-	if (field.includes('Subtitle') && !field.includes('Second Subtitle') && !field.includes('Hide')) {
+	if (field.includes(config.title) && !field.includes(config.secondSubtitle) && !field.includes(config.hide)) {
 		await setTextCharactersFromValue(layer, value);
 	}
 
-	if (field.includes('Hide Badge')) {
+	if (field.includes(config.hideBadge)) {
 		layer.visible = value;
 	}
 
-	if (field.includes('Online')) {
+	if (field.includes(config.online)) {
 		layer.visible = value;
 	}
 }
@@ -112,7 +122,7 @@ async function transformNodeWithData(node, data, method) {
 	}
 
 	if (!settableLayers) {
-		figma.notify('No layers are prefixed with ' + config.main + 'or' + config.show + ' in order to set data');
+		figma.notify(`No layers are prefixed with ${config.main} or ${config.show} in order to set data`);
 	}
 
 	for (let layer of settableLayers) {
@@ -124,10 +134,10 @@ async function transformNodeWithData(node, data, method) {
 		if (layer.name.includes(config.main)) {
 			const field = layer.name.replace(config.main, '');
 
-			let fieldTitle = field.includes('Title');
-			let fieldSubtitle = field.includes('Subtitle');
-			let fieldAvatar = field.includes('Avatar');
-			let fieldImage = field.includes('Image');
+			let fieldTitle = field.includes(config.title);
+			let fieldSubtitle = field.includes(config.subtitle);
+			let fieldAvatar = field.includes(config.avatar);
+			let fieldImage = field.includes(config.image);
 
 			// friends
 			if (methodPerson) {
@@ -173,8 +183,8 @@ async function transformNodeWithData(node, data, method) {
 		if (layer.name.includes(config.show)) {
 			const field = layer.name.replace(config.show, '');
 
-			if (methodSearch) value = field.includes('Hide Badge') && data.profile.verified == 1 ? true : false;
-			else value = field.includes('Hide Badge') && data.verified == 1 ? true : false;
+			if (methodSearch) value = field.includes(config.hideBadge) && data.profile.verified == 1 ? true : false;
+			else value = field.includes(config.hideBadge) && data.verified == 1 ? true : false;
 
 			await applyLayerTransformationFromField(layer, value, field);
 		}
@@ -183,7 +193,7 @@ async function transformNodeWithData(node, data, method) {
 		if (layer.name.includes(config.onlineBadge)) {
 			const field = layer.name.replace(config.onlineBadge, '');
 			
-			if (field.includes('Online')) {
+			if (field.includes(config.online)) {
 				if (methodPerson) value = data.online == 1 ? true : false;
 				if (methodSearch) value = data.profile.online == 1 ? true : false;
 				if (methodGroups) value = false;

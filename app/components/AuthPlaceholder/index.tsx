@@ -4,7 +4,6 @@ import I18n from 'react-light-i18n';
 export function AuthPlaceholder(props) {
   let displaySpinner = (props.loadingState) ? 'block' : 'none';
   let displayBtn = (props.loadingState) ? 'none' : 'block';
-  console.log(props.loadingState);
 
   return (
     <div>

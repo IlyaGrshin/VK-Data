@@ -2,6 +2,14 @@ export const config = {
   main: '↳ ',
   show: 'Show/',
   onlineBadge: 'x / Cell / Avatar Badge / Regular / ',
+  image: 'Image',
+  avatar: 'Avatar',
+  hide: 'Hide',
+  hideBadge: 'Hide Badge',
+  online: 'Online',
+  title: 'Title',
+  subtitle: 'Subtitle',
+  secondSubtitle: 'Second Subtitle'
 };
 
 const validShapeTypes = ['RECTANGLE', 'ELLIPSE', 'POLYGON', 'STAR', 'VECTOR', 'LINE', 'BOOLEAN_OPERATION'];
@@ -94,6 +102,31 @@ export function setUserID(id: any) {
   parent.postMessage(
     {
       pluginMessage: { type: 'setUserID', value: id },
+    },
+    '*'
+  );
+}
+
+export function getBannerShow() {
+  return new Promise((resolve) => {
+    parent.postMessage(
+      {
+        pluginMessage: { type: 'getBannerShow' },
+      },
+      '*'
+    );
+    window.addEventListener('message', async (event) => {
+      if (event.data.pluginMessage && event.data.pluginMessage.type === 'getBannerShow') {
+        resolve(event.data.pluginMessage.value);
+      }
+    });
+  });
+}
+
+export function setBannerShow(value: any) {
+  parent.postMessage(
+    {
+      pluginMessage: { type: 'setBannerShow', value: value },
     },
     '*'
   );

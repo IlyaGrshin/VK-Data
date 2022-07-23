@@ -8,5 +8,7 @@
     "signIn": "Sign In",
     "signInDesc": "To add data from VK, you should to login and allow access to the app.",
     "loading": "Loading",
-    "logout": "Logout"
+    "logout": "Logout",
+    "infoBanner": "To add data, among the names you should specify names such as:",
+    "infoBannerButton": "Hide"
 }
