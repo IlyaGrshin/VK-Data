@@ -1,4 +1,4 @@
-import { shuffle } from './utils'
+import shuffle from './utils'
 
 const API_URI = 'https://api.vk.com/method/';
 

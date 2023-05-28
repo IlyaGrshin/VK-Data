@@ -84,22 +84,14 @@ async function applyLayerTransformationFromField(layer, value?, field?) {
 		) {
 			value = require('./img/camera_200.png').default;
 		}
-			await setBackgroundFillFromImageUrl(layer, value);
-	}
-
-	if (field.includes(config.title) && !field.includes(config.hide)) {
+		await setBackgroundFillFromImageUrl(layer, value);
+	} else if (field.includes(config.title) && !field.includes(config.hide)) {
 		await setTextCharactersFromValue(layer, value);
-	}
-
-	if (field.includes(config.title) && !field.includes(config.secondSubtitle) && !field.includes(config.hide)) {
+	} else if (field.includes(config.title) && !field.includes(config.secondSubtitle) && !field.includes(config.hide)) {
 		await setTextCharactersFromValue(layer, value);
-	}
-
-	if (field.includes(config.hideBadge)) {
+	} else if (field.includes(config.hideBadge)) {
 		layer.visible = value;
-	}
-
-	if (field.includes(config.online)) {
+	} else if (field.includes(config.online)) {
 		layer.visible = value;
 	}
 }
@@ -211,8 +203,8 @@ function updateTextLayer(layer, update) {
 }
 
 async function setTextCharactersFromValue(layer, value) {
-	if (typeof value === 'number') {
-		value = String(value.toLocaleString());
+	if (Number.isNan(value)) {
+		value = value.toLocaleString();
 	}
 
 	await figma.loadFontAsync(layer.fontName);
@@ -223,16 +215,10 @@ async function setTextCharactersFromValue(layer, value) {
 	}
 }
 
-function getImageBytesFromUrl(url) {
-	figma.ui.postMessage({ type: 'getImageBytes', url });
-	return new Promise((res) => {
-		figma.ui.once('message', (value) => {
-		let data = value as Uint8Array;
-		let imageHash = figma.createImage(new Uint8Array(data)).hash;
-
-		const newFill = {
-			type: 'IMAGE',
-			filters: {
+function createFill(imageHash) {
+	return {
+		type: 'IMAGE',
+		filters: {
 			contrast: 0,
 			exposure: 0,
 			highlights: 0,
@@ -240,19 +226,26 @@ function getImageBytesFromUrl(url) {
 			shadows: 0,
 			temperature: 0,
 			tint: 0,
-			},
-			imageHash,
-			imageTransform: [
-				[1, 0, 0],
-				[0, 1, 0],
-			],
-			opacity: 1,
-			scaleMode: 'FILL',
-			scalingFactor: 0.5,
-			visible: true,
-		};
+		},
+		imageHash,
+		imageTransform: [
+			[1, 0, 0], 
+			[0, 1, 0]
+		],
+		opacity: 1,
+		scaleMode: 'FILL',
+		scalingFactor: 0.5,
+		visible: true,
+	};
+}
 
-		res([newFill]);
+function getImageBytesFromUrl(url) {
+	figma.ui.postMessage({ type: 'getImageBytes', url });
+	return new Promise((res) => {
+		figma.ui.once('message', value => {
+			let data = value as Uint8Array;
+			let imageHash = figma.createImage(new Uint8Array(data)).hash;
+			res([createFill(imageHash)]);
 		});
 	});
 }
